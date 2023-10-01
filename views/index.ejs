@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>GSM</title>
+  <meta name="description"
+        content="Garamante Social Manager semplifica la vita dei Content Creator.">
+  <meta name="keywords"
+        content="social, publhiser, manager">
+  <meta name="robots" content="index, follow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="Garamante Social Manager">
+  <meta property="og:description"
+        content="Garamante Social Manager semplifica la vita dei Content Creator.">
+  <!--    <meta property="og:image" content="https://garamante.it/thread/img/ogImage.webp">-->
+  <!--    <meta property="og:url" content="https://garamante.it/thread/">-->
+  <!--    <meta property="og:site_name" content="Garamante Thread">-->
+  <!--    <meta property="og:locale" content="it_IT">-->
+  <!--    <meta property="og:type" content="website">-->
+  <!--    <meta property="og:site_name" content="Garamante Thread">-->
+  <!--    <meta property="twitter:card" content="summary_large_image">-->
+  <!--    <meta property="twitter:site" content="https://garamante.it/thread/">-->
+  <!--    <meta property="twitter:creator" content="@OnnwenC">-->
+  <!--    <meta property="twitter:title" content="Garamante Thread">-->
+  <!--    <meta property="twitter:description"-->
+  <!--          content="Per chi avrà sempre i Thread nel proprio cuore: crearli non è mai stato così facile.">-->
+  <!--    <meta property="twitter:image" content="https://garamante.it/thread/img/ogImage.webp">-->
+  <!--    <meta property="twitter:url" content="https://garamante.it/thread/">-->
+  <!--    <meta property="twitter:domain" content="garamante.it">-->
+  <!--    <meta property="twitter:site_name" content="Garamante Thread">-->
+
+  <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./node_modules/bootstrap-icons/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body class="bg-light px-2">
+<%- toast %>
+
+<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="settingsModalLabel">Impostazioni &nbsp;<i class="bi bi-gear-fill"></i>
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <%- twitterAuth %>
+        <hr>
+
+        <b>Telegram <i class="bi bi-telegram ms-1" style="color: #0088cc;"></i></b>
+        <br>
+        <div class="text-muted mb-3">
+          ciao
+        </div>
+        <hr>
+
+        <b>Facebook <i class="bi bi-facebook ms-1" style="color: #1877f2;"></i></b>
+        <br>
+        <div class="text-muted mb-3">
+          ciao
+        </div>
+
+        <div id="testResult" class="d-flex justify-content-center mt-2">
+          <button type="button" class="btn btn-secondary w-100" id="testConfig">Verifica</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex flex-column min-vh-100">
+  <header>
+    <h1 class="mb-2 text-center mt-5">Garamante Social Manager</h1>
+    <h5 class="text-center text-muted mt-3">Semplifica il tuo lavoro sui socials.</h5>
+  </header>
+  <div class="container bg-white rounded-4 my-5 p-4 shadow" id="container">
+    <div class="hideIfImported">
+      <div class="mb-0 d-flex justify-content-end">
+        <button type="button" class="btn text-secondary" data-bs-toggle="modal" data-bs-target="#settingsModal"><i class="bi bi-gear-fill"></i></button>
+      </div>
+      <div class="mb-3">
+        <label for="text" class="form-label">Testo</label>
+        <textarea class="form-control" id="text"></textarea>
+      </div>
+      <div class="row">
+        <div class="col d-flex justify-content-center">
+          <div class="form-check form-switch mt-1">
+            <input class="form-check-input" type="checkbox" role="switch" id="twitter" checked>
+            <label class="form-check-label" for="twitter">Twitter</label>
+            <i class="bi bi-twitter" style="color: #00acee;"></i>
+          </div>
+        </div>
+
+        <div class="col d-flex justify-content-center">
+          <div class="form-check form-switch mt-1">
+            <input class="form-check-input" type="checkbox" role="switch" id="telegram" checked>
+            <label class="form-check-label" for="telegram">Telegram</label>
+            <button type="button" data-bs-toggle="modal" data-bs-target="#telegramToggle"
+                    class="info-button"><i class="bi bi-telegram" style="color: #0088cc;"></i></button>
+          </div>
+        </div>
+
+        <div class="col d-flex justify-content-center">
+          <div class="form-check form-switch mt-1">
+            <input class="form-check-input" type="checkbox" role="switch" id="facebook" checked>
+            <label class="form-check-label" for="facebook">Facebook</label>
+            <button type="button" data-bs-toggle="modal" data-bs-target="#facebookToggle"
+                    class="info-button"><i class="bi bi-facebook" style="color: #1877f2;"></i></button>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="btn btn-primary mt-5 w-100" id="publish">Pubblica</button>
+    </div>
+  </div>
+  <footer class="text-center text-secondary mb-5 position-absolute bottom-0 w-100">Realizzato con il &nbsp;♥️&nbsp;da Garamante.<br><br><a
+          href="https://garamante.it" class="btn">www.garamante.it</a></footer>
+</div>
+</body>
+</html>

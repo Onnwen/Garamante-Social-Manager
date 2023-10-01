@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700&display=swap');
+
+
+h1, h5, p, label, button, footer {
+    font-family: 'Poppins', sans-serif !important;
+}
+
+h5 {
+    font-weight: 200;
+    font-size: 17px;
+}
+
+.info-button {
+    background: none;
+    color: inherit;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+    transition: opacity 0.2s ease-in-out;
+    opacity: 80%;
+    padding: 0 0 0 2px;
+}
+
+.info-button:hover {
+    opacity: 50%;
+}
+
+.info-button:active {
+    opacity: 75%;
+}

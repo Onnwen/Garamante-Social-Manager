@@ -9,15 +9,12 @@ const client = new TwitterApi({
 
 /* GET twitter listing. */
 router.get('/', function(req, res, next) {
-  client.v2.singleTweet('1455477974489251841', {
-    'tweet.fields': [
-      'organic_metrics',
-    ],
-  }).then((val) => {
-    res.send(val)
-  }).catch((err) => {
-    res.send(err)
-  })
+  if (req.session.loggedClient) {
+    res.send({loggedClient: req.session.loggedClient.currentUser()});
+  }
+  else {
+    res.send({loggedClient: null});
+  }
 });
 
 router.get('/callback', (req, res) => {

@@ -28,7 +28,7 @@ app.use(sessions({
     resave: false
 }));
 
-app.use('/', indexRouter);
-app.use('/twitter', twitterRouter);
+app.use('/gsm/', indexRouter);
+app.use('/gsm/twitter', twitterRouter);
 
 module.exports = app;

@@ -46,7 +46,7 @@ router.get('/', async function (req, res, next) {
           "</script>"
     }
 
-    const authLink = await client.generateAuthLink('oob');
+    const authLink = await client.generateAuthLink('https://garamante.it/gsm/twitter/callback');
 
     if (!authLink) {
       return res.status(400).send('Invalid request!');

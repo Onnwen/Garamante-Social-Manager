@@ -37,7 +37,7 @@ router.post('/telegram', async function (req, res, next) {
     const text = req.body.text;
 
     try {
-        axios.get('https://api.telegram.org/bot' + req.session.telegramToken + '/sendMessage?chat_id=' + req.session.telegramChatID + '&text=' + text)
+        axios.get('https://api.telegram.org/bot' + req.session.telegramToken + '/sendMessage?chat_id=' + req.session.telegramChatID + '&text=' + encodeURIComponent(text))
             .then(response => {
                 if (response.status === 200 && response.data.ok) {
                     res.status(200).send({message: 'Pubblicato su Telegram.', status: 'primary'});

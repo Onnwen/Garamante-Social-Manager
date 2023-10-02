@@ -16,8 +16,9 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use('/gsm/public/', express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use('/gsm/node_modules', express.static(__dirname + '/node_modules/'))
+app.use('/gsm/public', express.static(__dirname + '/public/'))
 
 const oneDay = 1000 * 60 * 60 * 24;
 app.use(sessions({

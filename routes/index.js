@@ -36,7 +36,7 @@ router.get('/', async function (req, res, next) {
             variables.scripts += `showToast('Autenticazione a Twitter fallita.', 'danger');`;
         }
 
-        const authLink = await client.generateAuthLink('http://localhost:3002/gsm/auth/twitter/callback/');
+        const authLink = await client.generateAuthLink('https://garamante.it/gsm/auth/twitter/callback/');
 
         if (!authLink) {
             return res.status(400).send('Invalid request!');

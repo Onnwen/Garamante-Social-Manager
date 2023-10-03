@@ -32,10 +32,12 @@ router.get('/', async function (req, res, next) {
 
         if (req.query.twitterAuthenticated) {
             variables.scripts += `showToast('Autenticazione a Twitter avvenuta con successo.', 'success');`;
+            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`;
         }
     } else {
         if (req.query.twitterAuthenticationError) {
             variables.scripts += `showToast('Autenticazione a Twitter fallita.', 'danger');`;
+            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`;
         }
 
         const authLink = await client.generateAuthLink('https://garamante.it/gsm/auth/twitter/callback/');
@@ -53,6 +55,7 @@ router.get('/', async function (req, res, next) {
     if (!req.session.telegramToken || !req.session.telegramChatID) {
         if (req.query.telegramAuthenticatedError) {
             variables.scripts += `showToast('Autenticazione a Telegram fallita.', 'danger');`;
+            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`;
         }
 
         variables.telegramAuth = `
@@ -128,6 +131,7 @@ router.get('/', async function (req, res, next) {
     if (!req.session.facebookToken || !req.session.facebookPageID) {
         if (req.query.facebookAuthenticatedError) {
             variables.scripts += `showToast('Autenticazione a Facebook fallita.', 'danger');`;
+            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`;
         }
 
         variables.facebookAuth = `

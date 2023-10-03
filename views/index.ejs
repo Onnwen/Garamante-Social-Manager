@@ -59,9 +59,7 @@
 
                 <b>Facebook <i class="bi bi-facebook ms-1" style="color: #1877f2;"></i></b>
                 <br>
-                <div class="text-muted mb-3">
-                    Presto disponibile.
-                </div>
+                <%- facebookAuth %>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ok</button>
@@ -105,7 +103,7 @@
 
                 <div class="col d-flex justify-content-center">
                     <div class="form-check form-switch mt-1">
-                        <input class="form-check-input" type="checkbox" role="switch" id="facebook" disabled>
+                        <input class="form-check-input" type="checkbox" role="switch" id="facebook" <%- facebookToggle %>>
                         <label class="form-check-label" for="facebook">Facebook</label>
                         <button type="button" data-bs-toggle="modal" data-bs-target="#facebookToggle"
                                 class="info-button"><i class="bi bi-facebook" style="color: #1877f2;"></i></button>
@@ -167,7 +165,13 @@
                     break;
                     break;
                 case 'facebook':
-                    showToast('Pubblicazione su Facebook non disponibile', 'danger');
+                    $.post('/gsm/publish/facebook', {
+                        text: text
+                    }, function (publicationStatus) {
+                        showToast(publicationStatus.message, publicationStatus.status);
+                    }).fail(function () {
+                        showToast('Errore durante la pubblicazione su Facebook', 'danger');
+                    });
                     break;
             }
         });

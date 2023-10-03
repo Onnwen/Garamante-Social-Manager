@@ -82,4 +82,36 @@ router.get('/telegram/exit', function (req, res, next) {
     res.redirect('/gsm/');
 });
 
+router.get('/facebook/check', async function (req, res, next) {
+    if (!req.query.token || !req.query.pageID) {
+        return res.status(400).send('Missing parameters!');
+    }
+
+    try {
+        const response = await axios.get(`https://graph.facebook.com/${req.query.pageID}`, {
+            params: {
+                access_token: req.query.token,
+                fields: 'id,name'
+            }
+        });
+
+        if (response.status === 200 && response.data.id) {
+            req.session.facebookToken = req.query.token;
+            req.session.facebookPageID = req.query.pageID;
+            return res.redirect('/gsm/?facebookAuthenticated=true');
+        }
+        else {
+            return res.redirect('/gsm/?facebookAuthenticatedError=true');
+        }
+    } catch (error) {
+        return res.redirect('/gsm/?facebookAuthenticatedError=true');
+    }
+});
+
+router.get('/facebook/exit', function (req, res, next) {
+    req.session.facebookToken = null;
+    req.session.facebookPageID = null;
+    res.redirect('/gsm/');
+});
+
 module.exports = router;

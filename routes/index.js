@@ -13,8 +13,10 @@ router.get('/', async function (req, res, next) {
         "scripts": "",
         "twitterAuth": "",
         "telegramAuth": "",
+        "facebookAuth": "",
         "twitterToggle": "disabled",
         "telegramToggle": "disabled",
+        "facebookToggle": "disabled"
     };
 
     if (req.session.twitterClient) {
@@ -64,9 +66,41 @@ router.get('/', async function (req, res, next) {
                         <input type="text" class="form-control" id="telegramChatID">
                     </div>
                 </form>
-                <button type='button' class='btn btn-primary w-100' onclick='saveTelegramCredentials()'>Verifica</button>
+                <button type='button' class='btn btn-primary w-100' onclick='saveTelegramCredentials()' disabled id="authTelegramButton">Autentica Telegram</button>
                 <script>
+                    $(document).ready(function() { 
+                        if (localStorage.getItem('telegramToken') !== null && localStorage.getItem('telegramChatID') !== null) {
+                            document.getElementById('telegramToken').value = localStorage.getItem('telegramToken');
+                            document.getElementById('telegramChatID').value = localStorage.getItem('telegramChatID');
+                            checkTelegramCredentials();
+                        }
+                        
+                        $('#telegramToken').on('input', function() {
+                            checkTelegramCredentials();
+                        });
+                        $('#telegramChatID').on('input', function() {
+                            checkTelegramCredentials()
+                        });
+                    });
+                     
+                    function checkTelegramCredentials() {
+                        const token = document.getElementById('telegramToken').value;
+                        const chatID = document.getElementById('telegramChatID').value;
+                        
+                        if (token === '' || chatID === '') {
+                            $('#authTelegramButton').prop('disabled', true);
+                        }
+                        else if (token !== '' && chatID !== '') {
+                            $('#authTelegramButton').prop('disabled', false);
+                        }
+                    }
+                
                     function saveTelegramCredentials() {
+                        if (document.getElementById('telegramToken').value === '' || document.getElementById('telegramChatID').value === '') {
+                            showToast("Compila tutti i dati d'autenticazione Telegram.", 'danger');
+                            return;
+                        }
+                        
                         const token = document.getElementById('telegramToken').value;
                         const chatID = document.getElementById('telegramChatID').value;
                         window.location.href = '/gsm/auth/telegram/check?token=' + token + '&chatID=' + chatID;
@@ -77,6 +111,9 @@ router.get('/', async function (req, res, next) {
 
         if (req.query.telegramAuthenticated) {
             variables.scripts += `showToast('Autenticazione a Telegram avvenuta con successo.', 'success');`;
+            variables.scripts += `localStorage.setItem('telegramToken', '${req.session.telegramToken}');`;
+            variables.scripts += `localStorage.setItem('telegramChatID', '${req.session.telegramChatID}');`;
+            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`;
         }
 
         variables.telegramAuth = `
@@ -84,6 +121,81 @@ router.get('/', async function (req, res, next) {
             <script>
                 function exitFromTelegram() {
                     window.location.href = '/gsm/auth/telegram/exit';
+                }
+            </script>`;
+    }
+
+    if (!req.session.facebookToken || !req.session.facebookPageID) {
+        if (req.query.facebookAuthenticatedError) {
+            variables.scripts += `showToast('Autenticazione a Facebook fallita.', 'danger');`;
+        }
+
+        variables.facebookAuth = `
+                <form class="mt-2">
+                    <div class="mb-3">
+                        <label for="facebookToken" class="form-label">Token</label>
+                        <input type="text" class="form-control" id="facebookToken">
+                    </div>
+                    <div class="mb-3">
+                        <label for="facebookChatID" class="form-label">Page ID</label>
+                        <input type="text" class="form-control" id="facebookPageID">
+                    </div>
+                </form>
+                <button type='button' class='btn btn-primary w-100' onclick='saveFacebookCredentials()' disabled id="authFacebookButton">Autentica Facebook</button>
+                <script>
+                    $(document).ready(function() {
+                        if (localStorage.getItem('facebookToken') !== null && localStorage.getItem('facebookPageID') !== null) {
+                            document.getElementById('facebookToken').value = localStorage.getItem('facebookToken');
+                            document.getElementById('facebookPageID').value = localStorage.getItem('facebookPageID');
+                            checkFacebookCredentials();
+                        }
+                        
+                        $('#facebookToken').on('input', function() {
+                            checkFacebookCredentials();
+                        });
+                        $('#facebookPageID').on('input', function() {
+                            checkFacebookCredentials()
+                        });
+                    });
+                    
+                    function checkFacebookCredentials() {
+                        const token = document.getElementById('facebookToken').value;
+                        const pageID = document.getElementById('facebookPageID').value;
+                        
+                        if (token === '' || pageID === '') {
+                            $('#authFacebookButton').prop('disabled', true);
+                        }
+                        else if (token !== '' && pageID !== '') {
+                            $('#authFacebookButton').prop('disabled', false);
+                        }
+                    }
+                
+                    function saveFacebookCredentials() {
+                        if (document.getElementById('facebookToken').value === '' || document.getElementById('facebookPageID').value === '') {
+                            showToast("Compila tutti i dati d'autenticazione Facebook.", 'danger');
+                            return;
+                        }
+                        
+                        const token = document.getElementById('facebookToken').value;
+                        const pageID = document.getElementById('facebookPageID').value;
+                        window.location.href = '/gsm/auth/facebook/check?token=' + token + '&pageID=' + pageID;
+                    }
+                </script>`;
+    } else {
+        variables.facebookToggle = `checked`;
+
+        if (req.query.facebookAuthenticated) {
+            variables.scripts += `showToast('Autenticazione a Facebook avvenuta con successo.', 'success');`;
+            variables.scripts += `localStorage.setItem('facebookToken', '${req.session.facebookToken}');`;
+            variables.scripts += `localStorage.setItem('facebookPageID', '${req.session.facebookPageID}');`;
+            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`;
+        }
+
+        variables.facebookAuth = `
+            <button type='button' class='btn btn-danger w-100 mt-2' onclick='exitFromFacebook()'>Disconnetti Facebook</button>
+            <script>
+                function exitFromFacebook() {
+                    window.location.href = '/gsm/auth/facebook/exit';
                 }
             </script>`;
     }

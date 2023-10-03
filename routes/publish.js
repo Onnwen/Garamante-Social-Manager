@@ -55,4 +55,29 @@ router.post('/telegram', async function (req, res, next) {
     }
 });
 
+router.post('/facebook', async function (req, res, next) {
+    if (!req.body.text) {
+        return res.status(400).send('Missing parameters!');
+    }
+
+    const text = req.body.text;
+
+    try {
+        axios.post('https://graph.facebook.com/' + req.session.facebookPageID + '/feed?message=' + text + '&access_token=' + req.session.facebookToken)            .then(response => {
+                if (response.status === 200) {
+                    res.status(200).send({message: 'Pubblicato su Facebook.', status: 'primary'});
+                }
+                else {
+                    res.send({message: 'Errore durante la pubblicazione su Facebook. (' + response.data + ')', status: 'danger'});
+                }
+            })
+            .catch(error => {
+                res.send({message: 'Errore durante la pubblicazione su Facebook. (' + error + ')', status: 'danger'});
+            });
+    }
+    catch (error) {
+        return res.status(500).send({message: 'Errore durante la pubblicazione su Facebook. (' + error + ')', status: 'danger'});
+    }
+});
+
 module.exports = router;

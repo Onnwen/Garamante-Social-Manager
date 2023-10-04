@@ -171,14 +171,17 @@ router.post('/facebook', async function (req, res, next) {
                     res.status(200).send({message: 'Pubblicato su Facebook.', status: 'primary'});
                 }
                 else {
+                    console.log(response)
                     res.status(500).send({message: 'Errore durante la pubblicazione su Facebook. (' + response.data + ')', status: 'danger'});
                 }
             })
             .catch(error => {
+                console.log(error)
                 res.status(500).send({message: 'Errore durante la pubblicazione su Facebook. (' + error + ')', status: 'danger'});
             });
     }
     catch (error) {
+        console.log(error)
         res.status(500).send({message: 'Errore durante la pubblicazione su Facebook. (' + error + ')', status: 'danger'});
     }
 });

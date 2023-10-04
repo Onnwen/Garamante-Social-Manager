@@ -165,7 +165,7 @@ router.post('/facebook', async function (req, res, next) {
     const text = req.body.text;
 
     try {
-        axios.post('https://graph.facebook.com/' + req.session.facebookPageID + '/feed?message=' + text + '&access_token=' + req.session.facebookToken)
+        axios.post('https://graph.facebook.com/' + req.session.facebookPageID + '/feed?message=' + encodeURIComponent(text) + '&access_token=' + req.session.facebookToken)
             .then(response => {
                 if (response.status === 200) {
                     res.status(200).send({message: 'Pubblicato su Facebook.', status: 'primary'});

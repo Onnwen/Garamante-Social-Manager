@@ -31,7 +31,16 @@
     <link rel="stylesheet" href="/gsm/stylesheets/style.css">
     <script src="/gsm/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="/gsm/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.tiny.cloud/1/b6tvaqybdhv3p3bmz9q0lxcbtr63at7tas8lqykwkxp6m9ci/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        input {
+            --bs-border-width: 2px;
+            --bs-border-color: #eee;
+            --bs-border-radius: 10px;
+        }
+
+    </style>
 </head>
 
 <body class="bg-light px-2">
@@ -68,59 +77,76 @@
     </div>
 </div>
 
-<div class="d-flex flex-column min-vh-100">
+<div class="d-flex flex-column" style="height: calc(max(100vh,800px) - 75px);">
     <header>
         <h1 class="mb-2 text-center mt-5">Garamante Social Manager</h1>
         <h5 class="text-center text-muted mt-3">Semplifica il tuo lavoro sui social.</h5>
     </header>
     <div class="container bg-white rounded-4 my-5 p-4 shadow" id="container">
-        <div class="hideIfImported">
-            <div class="mb-0 d-flex justify-content-end">
-                <button type="button" class="btn text-secondary" data-bs-toggle="modal" data-bs-target="#settingsModal">
-                    <i class="bi bi-gear-fill"></i></button>
-            </div>
-            <div class="mb-3">
-                <label for="text" class="form-label">Testo</label>
-                <textarea class="form-control" id="text"></textarea>
-            </div>
-            <div class="row">
-                <div class="col d-flex justify-content-center">
-                    <div class="form-check form-switch mt-1">
-                        <input class="form-check-input" type="checkbox" role="switch" id="twitter" <%- twitterToggle %>>
-                        <label class="form-check-label" for="twitter">Twitter</label>
-                        <i class="bi bi-twitter" style="color: #00acee;"></i>
-                    </div>
-                </div>
-
-                <div class="col d-flex justify-content-center">
-                    <div class="form-check form-switch mt-1">
-                        <input class="form-check-input" type="checkbox" role="switch" id="telegram" <%- telegramToggle %>>
-                        <label class="form-check-label" for="telegram">Telegram</label>
-                        <button type="button" data-bs-toggle="modal" data-bs-target="#telegramToggle"
-                                class="info-button"><i class="bi bi-telegram" style="color: #0088cc;"></i></button>
-                    </div>
-                </div>
-
-                <div class="col d-flex justify-content-center">
-                    <div class="form-check form-switch mt-1">
-                        <input class="form-check-input" type="checkbox" role="switch" id="facebook" <%- facebookToggle %>>
-                        <label class="form-check-label" for="facebook">Facebook</label>
-                        <button type="button" data-bs-toggle="modal" data-bs-target="#facebookToggle"
-                                class="info-button"><i class="bi bi-facebook" style="color: #1877f2;"></i></button>
-                    </div>
-                </div>
-            </div>
-            <button type="button" class="btn btn-primary mt-5 w-100" id="publish">Pubblica</button>
+        <div class="mb-0 d-flex justify-content-end">
+            <button type="button" class="btn text-secondary" data-bs-toggle="modal" data-bs-target="#settingsModal">
+                <i class="bi bi-gear-fill"></i></button>
         </div>
+        <div class="mb-4">
+            <label for="text" class="form-label">Testo</label>
+            <textarea class="form-control" id="text"></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="text" class="form-label">Media</label>
+            <div class="input-group mb-3">
+                <input type="file" class="form-control" id="medias" accept="video/*,image/*" multiple>
+                <button class="btn btn-danger" id="deleteFiles">
+                    <i class="bi bi-trash-fill"></i>
+                </button>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col d-flex justify-content-center">
+                <div class="form-check form-switch mt-1">
+                    <input class="form-check-input" type="checkbox" role="switch" id="twitter" <%- twitterToggle %>>
+                    <label class="form-check-label" for="twitter">Twitter</label>
+                    <i class="bi bi-twitter" style="color: #00acee;"></i>
+                </div>
+            </div>
+
+            <div class="col d-flex justify-content-center">
+                <div class="form-check form-switch mt-1">
+                    <input class="form-check-input" type="checkbox" role="switch" id="telegram" <%- telegramToggle %>>
+                    <label class="form-check-label" for="telegram">Telegram</label>
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#telegramToggle"
+                            class="info-button"><i class="bi bi-telegram" style="color: #0088cc;"></i></button>
+                </div>
+            </div>
+
+            <div class="col d-flex justify-content-center">
+                <div class="form-check form-switch mt-1">
+                    <input class="form-check-input" type="checkbox" role="switch" id="facebook" <%- facebookToggle %>>
+                    <label class="form-check-label" for="facebook">Facebook</label>
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#facebookToggle"
+                            class="info-button"><i class="bi bi-facebook" style="color: #1877f2;"></i></button>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary mt-5 w-100" id="publish">Pubblica</button>
     </div>
-    <footer class="text-center text-secondary mb-5 position-absolute bottom-0 w-100">Realizzato con il &nbsp;♥️&nbsp;da
-        Garamante.<br><br><a
-                href="https://garamante.it" class="btn">www.garamante.it</a></footer>
 </div>
+<footer class="text-center text-secondary w-100" style="height: 75px"><a href="https://garamante.it" class="btn mt-2 text-muted">www.garamante.it</a></footer>
 </body>
 <script>
-    $('#publish').click(function () {
-        let text = $('#text').val();
+    const publishButton = $('#publish');
+
+    tinymce.init({
+        selector: "#text",
+        plugins: "emoticons autoresize",
+        toolbar: "emoticons",
+        toolbar_location: "bottom",
+        menubar: false,
+        statusbar: false,
+        language: "it",
+    });
+
+    publishButton.click(function () {
+        let text = tinymce.get("text").getContent({format : 'text'});
         let platforms = [];
 
         if (text === '') {
@@ -143,38 +169,47 @@
             return;
         }
 
-        platforms.forEach(function (platform) {
-            switch (platform) {
-                case 'twitter':
-                    $.post('/gsm/publish/twitter', {
-                        text: text
-                    }, function (publicationStatus) {
-                        showToast(publicationStatus.message, publicationStatus.status);
-                    }).fail(function () {
-                        showToast('Errore durante la pubblicazione su Twitter', 'danger');
-                    });
-                    break;
-                case 'telegram':
-                    $.post('/gsm/publish/telegram', {
-                        text: text
-                    }, function (publicationStatus) {
-                        showToast(publicationStatus.message, publicationStatus.status);
-                    }).fail(function () {
-                        showToast('Errore durante la pubblicazione su Twitter', 'danger');
-                    });
-                    break;
-                    break;
-                case 'facebook':
-                    $.post('/gsm/publish/facebook', {
-                        text: text
-                    }, function (publicationStatus) {
-                        showToast(publicationStatus.message, publicationStatus.status);
-                    }).fail(function () {
-                        showToast('Errore durante la pubblicazione su Facebook', 'danger');
-                    });
-                    break;
-            }
-        });
+        const files = ($('#medias').val());
+
+        publishButton.attr('disabled', true);
+
+        if (files.length > 0) {
+            publishButton.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Carico contenuti multimediali...');
+
+            let form = new FormData();
+            $('#medias').each(function (i, fileInput) {
+                $.each(fileInput.files, function (i, file) {
+                    form.append('files', file);
+                });
+            });
+
+            const settings = {
+                url: "/gsm/publish/upload",
+                method: "POST",
+                timeout: 0,
+                processData: false,
+                mimeType: "multipart/form-data",
+                contentType: false,
+                data: form
+            };
+
+            $.ajax(settings).done(function (response) {
+                jsonResponse = JSON.parse(response);
+                console.log(jsonResponse.mediasNames)
+                publishTexts(platforms, text, jsonResponse.mediasNames);
+            }).fail(function () {
+                showToast('È stato riscontrato un errore durante il caricamento dei contenuti multimediali.', 'danger');
+                publishButton.attr('disabled', false);
+                publishButton.html('Pubblica');
+            });
+        }
+        else {
+            publishTexts(platforms, text, []);
+        }
+    });
+
+    $('#deleteFiles').click(function () {
+        $('#medias').val('');
     });
 
     function showToast(text, type) {
@@ -188,6 +223,59 @@
                                 </div>
                             </div>`);
         $(`#${randomId}`).toast('show');
+    }
+
+    function publishTexts(platforms, text, mediasNames) {
+        publishButton.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Pubblico sui social...');
+        platforms.forEach(function (platform) {
+            let completedPlatformsCount = 0;
+
+            switch (platform) {
+                case 'twitter':
+                    $.post('/gsm/publish/twitter', {
+                        text: text,
+                        mediasNames: mediasNames
+                    }, function (publicationStatus) {
+                        showToast(publicationStatus.message, publicationStatus.status);
+                    }).fail(function (error) {
+                        showToast(error.responseJSON.message, 'danger');
+                    }).always(function () {
+                        completed();
+                    });
+                    break;
+                case 'telegram':
+                    $.post('/gsm/publish/telegram', {
+                        text: text,
+                        mediasNames: mediasNames
+                    }, function (publicationStatus) {
+                        showToast(publicationStatus.message, publicationStatus.status);
+                    }).fail(function (error) {
+                        showToast(error.responseJSON.message, 'danger');
+                    }).always(function () {
+                        completed();
+                    });
+                    break;
+                case 'facebook':
+                    $.post('/gsm/publish/facebook', {
+                        text: text
+                    }, function (publicationStatus) {
+                        showToast(publicationStatus.message, publicationStatus.status);
+                    }).fail(function (error) {
+                        showToast(error.responseJSON.message, 'danger');
+                    }).always(function () {
+                        completed();
+                    });
+                    break;
+            }
+
+            function completed() {
+                completedPlatformsCount++;
+                if (completedPlatformsCount === platforms.length) {
+                    publishButton.attr('disabled', false);
+                    publishButton.html('Pubblica');
+                }
+            }
+        });
     }
 
     $(document).ready(function () {

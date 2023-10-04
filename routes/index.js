@@ -31,7 +31,7 @@ router.get('/', async function (req, res, next) {
         variables.twitterToggle = `checked`;
 
         if (req.query.twitterAuthenticated) {
-            variables.scripts += `showToast('Autenticazione a Twitter avvenuta con successo.', 'success');`;
+            variables.scripts += `showToast('Autenticazione a Twitter avvenuta con successo.', 'primary');`;
             variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`;
         }
     } else {
@@ -40,7 +40,7 @@ router.get('/', async function (req, res, next) {
             variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`;
         }
 
-        const authLink = await client.generateAuthLink('https://garamante.it/gsm/auth/twitter/callback/');
+        const authLink = await client.generateAuthLink('http://localhost:3003/gsm/auth/twitter/callback/');
 
         if (!authLink) {
             return res.status(400).send('Invalid request!');
@@ -113,7 +113,7 @@ router.get('/', async function (req, res, next) {
         variables.telegramToggle = `checked`;
 
         if (req.query.telegramAuthenticated) {
-            variables.scripts += `showToast('Autenticazione a Telegram avvenuta con successo.', 'success');`;
+            variables.scripts += `showToast('Autenticazione a Telegram avvenuta con successo.', 'primary');`;
             variables.scripts += `localStorage.setItem('telegramToken', '${req.session.telegramToken}');`;
             variables.scripts += `localStorage.setItem('telegramChatID', '${req.session.telegramChatID}');`;
             variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`;
@@ -189,7 +189,7 @@ router.get('/', async function (req, res, next) {
         variables.facebookToggle = `checked`;
 
         if (req.query.facebookAuthenticated) {
-            variables.scripts += `showToast('Autenticazione a Facebook avvenuta con successo.', 'success');`;
+            variables.scripts += `showToast('Autenticazione a Facebook avvenuta con successo.', 'primary');`;
             variables.scripts += `localStorage.setItem('facebookToken', '${req.session.facebookToken}');`;
             variables.scripts += `localStorage.setItem('facebookPageID', '${req.session.facebookPageID}');`;
             variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`;

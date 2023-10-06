@@ -36,7 +36,15 @@ router.post('/twitter', async function (req, res, next) {
         }
         catch (error) {
             console.log(error);
-            return res.status(500).send({message: 'Errore durante la pubblicazione su Twitter. (' + error + ')', status: 'danger'});
+            if (error.errors[0].message) {
+                return res.status(500).send({message: 'Errore durante la pubblicazione su Twitter. (' + error.errors[0].message + ')', status: 'danger'});
+            }
+            else {
+                return res.status(500).send({
+                    message: 'Errore durante la pubblicazione su Twitter. (' + error + ')',
+                    status: 'danger'
+                });
+            }
         }
     }
 
@@ -55,7 +63,15 @@ router.post('/twitter', async function (req, res, next) {
         return res.status(200).send({message: 'Pubblicato su Twitter.', status: 'primary'});
     } catch (error) {
         console.log(error)
-        return res.status(500).send({message: 'Errore durante la pubblicazione su Twitter. (' + error + ')', status: 'danger'});
+        if (error.errors[0].message) {
+            return res.status(500).send({message: 'Errore durante la pubblicazione su Twitter. (' + error.errors[0].message + ')', status: 'danger'});
+        }
+        else {
+            return res.status(500).send({
+                message: 'Errore durante la pubblicazione su Twitter. (' + error + ')',
+                status: 'danger'
+            });
+        }
     }
 });
 

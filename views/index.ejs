@@ -34,109 +34,225 @@
     <link rel="stylesheet" href="/gsm/stylesheets/style.css">
     <script src="/gsm/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="/gsm/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.tiny.cloud/1/b6tvaqybdhv3p3bmz9q0lxcbtr63at7tas8lqykwkxp6m9ci/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.tiny.cloud/1/b6tvaqybdhv3p3bmz9q0lxcbtr63at7tas8lqykwkxp6m9ci/tinymce/6/tinymce.min.js"
+            referrerpolicy="origin"></script>
+    <script src="/gsm/node_modules/sticky-footer.js/src/sticky-footer.min.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        input {
-            --bs-border-width: 2px;
-            --bs-border-color: #eee;
-            --bs-border-radius: 10px;
-        }
-
-    </style>
 </head>
 
 <body class="bg-light px-2">
-<div class="toast-container mx-2 my-3 position-absolute bottom-0 end-0" id="toasts">
-</div>
-<div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel"
-     aria-hidden="true">
+
+<div class="modal fade" id="termsOfUseModal" tabindex="-1" aria-labelledby="termsOfUseModal" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="settingsModalLabel">Impostazioni &nbsp;<i class="bi bi-gear-fill"></i>
-                </h1>
+                <h5 class="modal-title" id="termsOfUseModalLabel">Termini di utilizzo <i
+                            class="bi bi-info-circle-fill text-primary ms-1"></i></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <b>Twitter <i class="bi bi-twitter ms-1" style="color: #00acee;"></i></b>
-                <br>
-                <%- twitterAuth %>
-                <hr>
-
-                <b>Telegram <i class="bi bi-telegram ms-1" style="color: #0088cc;"></i></b>
-                <br>
-                <%- telegramAuth %>
-                <hr>
-
-                <b>Facebook <i class="bi bi-facebook ms-1" style="color: #1877f2;"></i></b>
-                <br>
-                <%- facebookAuth %>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ok</button>
+                <ol>
+                    <li>
+                        <strong>Accettazione dei termini</strong><br>
+                        Accedendo o utilizzando GSM, accetti di essere vincolato da questi Termini di
+                        Utilizzo e dalla nostra Informativa sulla Privacy. Se non accetti questi termini, ti preghiamo
+                        di non utilizzare GSM.
+                    </li>
+                    <li>
+                        <strong>Uso consentito</strong><br>
+                        GSM ti permette di pubblicare un testo e contenuti multimediali contemporaneamente su Twitter,
+                        Telegram e
+                        Facebook. Puoi GSM solo per scopi leciti e conformi a questi Termini di
+                        Utilizzo.
+                    </li>
+                    <li>
+                        <strong>Proprietà intellettuale</strong><br>
+                        GSM e tutti i materiali correlati sono di nostra proprietà o concessi in licenza. Non
+                        hai il diritto di utilizzare il marchio GSM o qualsiasi contenuto di GSM senza il
+                        nostro consenso scritto.
+                    </li>
+                    <li>
+                        <strong>Utilizzo delle API ufficiali</strong><br>
+                        GSM utilizza le API ufficiali di Twitter, Telegram e Facebook per consentire la
+                        pubblicazione dei tuoi testi. L'uso di tali API è soggetto ai Termini di Servizio delle
+                        rispettive piattaforme.
+                    </li>
+                    <li>
+                        <strong>Salvataggio dei dati</strong><br>
+                        GSM non salva i tuoi dati in nessun database. I tuoi dati vengono mantenuti in sessione solo per
+                        scopi tecnici e per la durata utile dell'uso di GSM.
+                    </li>
+                    <li>
+                        <strong>Cookie tecnici</strong><br>
+                        GSM usa cookie in locale per memorizzare le tue credenziali e facilitare il tuo
+                        accesso al servizio.
+                    </li>
+                    <li>
+                        <strong>Limitazioni di responsabilità</strong><br>
+                        Non siamo responsabili per eventuali danni derivanti dall'uso del servizio o dall'incapacità di
+                        utilizzarlo.
+                    </li>
+                    <li>
+                        <strong>Modifiche ai termini</strong><br>
+                        Ci riserviamo il diritto di modificare questi Termini di Utilizzo in qualsiasi momento. Le
+                        modifiche saranno pubblicate sul sito web e saranno efficaci immediatamente. Continuando a
+                        utilizzare il servizio, accetti le modifiche apportate.
+                    </li>
+                    <li>
+                        <strong>Legge applicabile</strong><br>
+                        Questi Termini di Utilizzo sono regolati dalle leggi dello Stato in cui siamo registrati.
+                    </li>
+                </ol>
             </div>
         </div>
     </div>
 </div>
 
-<div class="d-flex flex-column" style="height: calc(max(100vh,800px) - 75px);">
-    <header>
-        <h1 class="mb-2 text-center mt-5">Garamante Social Manager</h1>
-        <h5 class="text-center text-muted mt-3">Ogni click, ogni post, ogni condivisione: GSM è qui, per te.</h5>
-    </header>
-    <div class="container bg-white rounded-4 my-5 p-4 shadow" id="container">
-        <div class="mb-0 d-flex justify-content-end">
-            <button type="button" class="btn text-secondary" data-bs-toggle="modal" data-bs-target="#settingsModal">
-                <i class="bi bi-gear-fill"></i></button>
-        </div>
-        <div class="mb-4">
-            <label for="text" class="form-label">Testo</label>
-            <textarea class="form-control" id="text"></textarea>
-        </div>
-        <div class="mb-3">
-            <label for="text" class="form-label">Media</label>
-            <div class="input-group mb-3">
-                <input type="file" class="form-control" id="medias" accept="video/*,image/*" multiple>
-                <button class="btn btn-danger" id="deleteFiles">
-                    <i class="bi bi-trash-fill"></i>
-                </button>
+<div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="privacyModalLabel">Informativa sulla privacy <i
+                            class="bi bi-shield-lock-fill text-primary ms-1"></i></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        </div>
-        <div class="row mt-5">
-            <div class="col d-flex justify-content-center">
-                <div class="form-check form-switch mt-1">
-                    <input class="form-check-input" type="checkbox" role="switch" id="twitter" <%- twitterToggle %>>
-                    <label class="form-check-label" for="twitter">Twitter</label>
-                    <i class="bi bi-twitter" style="color: #00acee;"></i>
-                </div>
-            </div>
+            <div class="modal-body">
+                <ol>
+                    <li>
+                        <strong>Dati raccolti</strong><br>
+                        Raccogliamo e conserviamo le credenziali necessarie per l'accesso al servizio. Non raccogliamo o
+                        memorizziamo alcun dato relativo ai testi che pubblichi tramite il servizio.
+                    </li>
+                    <li>
+                        <strong>Utilizzo delle informazioni</strong><br>
+                        Utilizziamo le informazioni raccolte solo per fornire il servizio e per scopi tecnici. Non
+                        condividiamo queste informazioni con terzi.
+                    </li>
+                    <li>
+                        <strong>Contatti</strong><br>
+                        Per qualsiasi domanda o richiesta in merito alla privacy, puoi contattarci all'indirizzo email
+                        <a href="mailto:onnwen@garamante.it">onnwen@garamante.it</a>.
+                    </li>
+                    <li>
+                        <strong>Aggiornamenti dell'Informativa</strong><br>
+                        L'Informativa sulla Privacy può essere soggetta a modifiche. Eventuali aggiornamenti saranno
+                        pubblicati sul sito web.
+                    </li>
 
-            <div class="col d-flex justify-content-center">
-                <div class="form-check form-switch mt-1">
-                    <input class="form-check-input" type="checkbox" role="switch" id="telegram" <%- telegramToggle %>>
-                    <label class="form-check-label" for="telegram">Telegram</label>
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#telegramToggle"
-                            class="info-button"><i class="bi bi-telegram" style="color: #0088cc;"></i></button>
-                </div>
-            </div>
-
-            <div class="col d-flex justify-content-center">
-                <div class="form-check form-switch mt-1">
-                    <input class="form-check-input" type="checkbox" role="switch" id="facebook" <%- facebookToggle %>>
-                    <label class="form-check-label" for="facebook">Facebook</label>
-                    <button type="button" data-bs-toggle="modal" data-bs-target="#facebookToggle"
-                            class="info-button"><i class="bi bi-facebook" style="color: #1877f2;"></i></button>
-                </div>
+                    <div class="text-muted">Data l'assenza di una registrazione e di un database centralizzato, consigliamo agli utenti di
+                        mantenere copie dei propri testi per eventuali esigenze future.</div>
+                </ol>
             </div>
         </div>
-        <button type="button" class="btn btn-primary mt-5 w-100" id="publish">Pubblica</button>
     </div>
 </div>
-<footer class="text-center text-secondary w-100" style="height: 75px"><a href="https://garamante.it" class="btn mt-2 text-muted">www.garamante.it</a></footer>
+
+<div class="main-content">
+    <div class="toast-container mx-2 my-3 position-absolute bottom-0 end-0" id="toasts">
+    </div>
+    <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="settingsModalLabel">Impostazioni &nbsp;<i
+                                class="bi bi-gear-fill"></i>
+                    </h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <b>Twitter <i class="bi bi-twitter ms-1" style="color: #00acee;"></i></b>
+                    <br>
+                    <%- twitterAuth %>
+                    <hr>
+
+                    <b>Telegram <i class="bi bi-telegram ms-1" style="color: #0088cc;"></i></b>
+                    <br>
+                    <%- telegramAuth %>
+                    <hr>
+
+                    <b>Facebook <i class="bi bi-facebook ms-1" style="color: #1877f2;"></i></b>
+                    <br>
+                    <%- facebookAuth %>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex flex-column">
+        <header>
+            <h1 class="mb-2 text-center mt-5">Garamante Social Manager</h1>
+            <h5 class="text-center text-muted mt-3">Ogni click, ogni post, ogni condivisione: GSM è qui, per te.</h5>
+        </header>
+        <div class="container bg-white rounded-4 my-5 p-4 shadow" id="container">
+            <div class="mb-0 d-flex justify-content-end">
+                <button type="button" class="btn text-secondary" data-bs-toggle="modal" data-bs-target="#settingsModal">
+                    <i class="bi bi-gear-fill"></i></button>
+            </div>
+            <div class="mb-4">
+                <label for="text" class="form-label">Testo</label>
+                <textarea class="form-control" id="text"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="text" class="form-label">Media</label>
+                <div class="input-group mb-3">
+                    <input type="file" class="form-control" id="medias" accept="video/*,image/*" multiple>
+                    <button class="btn btn-danger" id="deleteFiles">
+                        <i class="bi bi-trash-fill"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col d-flex justify-content-center">
+                    <div class="form-check form-switch mt-1">
+                        <input class="form-check-input" type="checkbox" role="switch" id="twitter" <%- twitterToggle %>>
+                        <label class="form-check-label" for="twitter">Twitter</label>
+                        <i class="bi bi-twitter" style="color: #00acee;"></i>
+                    </div>
+                </div>
+
+                <div class="col d-flex justify-content-center">
+                    <div class="form-check form-switch mt-1">
+                        <input class="form-check-input" type="checkbox" role="switch"
+                               id="telegram" <%- telegramToggle %>>
+                        <label class="form-check-label" for="telegram">Telegram</label>
+                        <i class="bi bi-telegram" style="color: #0088cc;"></i>
+                    </div>
+                </div>
+
+                <div class="col d-flex justify-content-center">
+                    <div class="form-check form-switch mt-1">
+                        <input class="form-check-input" type="checkbox" role="switch"
+                               id="facebook" <%- facebookToggle %>>
+                        <label class="form-check-label" for="facebook">Facebook</label>
+                        <i class="bi bi-facebook" style="color: #1877f2;"></i>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary mt-5 w-100" id="publish">Pubblica</button>
+        </div>
+    </div>
+</div>
+<footer class="text-center text-secondary w-100 mb-4">
+    <div class="d-flex justify-content-center gap-2">
+        <button type="button" class="btn btn-link-button" data-bs-toggle="modal" data-bs-target="#privacyModal">
+            Privacy
+        </button>
+        <button type="button" class="btn btn-link-button" data-bs-toggle="modal" data-bs-target="#termsOfUseModal">
+            Termini di utilizzo
+        </button>
+        <a href="https://github.com/Onnwen/Garamante-Social-Manager.git" class="btn btn-link-button">Sorgente</a>
+    </div>
+    <a href="https://garamante.it" class="btn btn-link-button mt-2 text-muted">www.garamante.it</a>
+</footer>
 </body>
 <script>
     const publishButton = $('#publish');
+
+    jQuery(".main-content").adjustHeightForScreen();
 
     tinymce.init({
         selector: "#text",
@@ -149,7 +265,7 @@
     });
 
     publishButton.click(function () {
-        let text = tinymce.get("text").getContent({format : 'text'});
+        let text = tinymce.get("text").getContent({format: 'text'});
         let platforms = [];
 
         if (text === '') {
@@ -205,8 +321,7 @@
                 publishButton.attr('disabled', false);
                 publishButton.html('Pubblica');
             });
-        }
-        else {
+        } else {
             publishTexts(platforms, text, []);
         }
     });

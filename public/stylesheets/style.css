@@ -11,22 +11,27 @@ h5 {
     font-size: 17px;
 }
 
-.info-button {
-    background: none;
-    color: inherit;
+input {
+    --bs-border-width: 2px;
+    --bs-border-color: #eee;
+    --bs-border-radius: 10px;
+}
+
+.btn-link-button:focus {
+    outline: none;
     border: none;
-    font: inherit;
-    cursor: pointer;
-    outline: inherit;
-    transition: opacity 0.2s ease-in-out;
-    opacity: 80%;
-    padding: 0 0 0 2px;
 }
 
-.info-button:hover {
-    opacity: 50%;
+.btn-link-button:active {
+    outline: none;
+    border: none;
 }
 
-.info-button:active {
-    opacity: 75%;
+.btn-link-button {
+    outline: none;
+    border: none;
+}
+
+li {
+    margin-bottom: 10px;
 }

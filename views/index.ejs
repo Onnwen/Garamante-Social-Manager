@@ -195,7 +195,7 @@
                     <i class="bi bi-gear-fill"></i></button>
             </div>
             <div class="mb-4">
-                <label for="text" class="form-label">Testo</label>
+                <label for="text" class="form-label">Testo <span class="text-muted" id="charsCount"></span></label>
                 <textarea class="form-control" id="text"></textarea>
             </div>
             <div class="mb-3">
@@ -257,7 +257,6 @@
 <script>
     const publishButton = $('#publish');
 
-
     tinymce.init({
         selector: "#text",
         plugins: "emoticons autoresize",
@@ -265,7 +264,17 @@
         toolbar_location: "bottom",
         menubar: false,
         statusbar: false,
-        newline_behavior: 'linebreak'
+        newline_behavior: 'linebreak',
+        setup : function(ed){
+            ed.on('Paste Change input Undo Redo', function(e){
+                if (ed.getContent().length > 0) {
+                    $('#charsCount').html(`(${ed.getContent({format: 'text'}).length} caratteri)`);
+                }
+                else {
+                    $('#charsCount').html('');
+                }
+            });
+        }
     });
 
     publishButton.click(function () {
@@ -403,6 +412,7 @@
     }
 
     $(document).ready(function () {
+        updateCharsCount();
         <%- scripts %>
     });
 </script>

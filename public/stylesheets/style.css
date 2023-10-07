@@ -11,7 +11,7 @@ h5 {
     font-size: 17px;
 }
 
-input {
+input, .input-group {
     --bs-border-width: 2px;
     --bs-border-color: #eee;
     --bs-border-radius: 10px;
@@ -34,4 +34,9 @@ input {
 
 li {
     margin-bottom: 10px;
+}
+
+hr {
+    color: #eee;
+    opacity: 1;
 }

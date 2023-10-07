@@ -50,17 +50,43 @@ router.post('/twitter', async function (req, res, next) {
 
     try {
         if (mediaIDs.length > 0) {
-            await client.v2.tweet({
-                text: text,
-                media: { media_ids: mediaIDs }
-            });
+            if (req.body.twitterPostResponseID === "") {
+                const {data: createdTweet} = await client.v2.tweet({
+                    text: text,
+                    media: {media_ids: mediaIDs}
+                });
+                req.session.lastTweetId = createdTweet.id;
+            }
+            else {
+                const {data: createdTweet} = await client.v2.tweet({
+                    text: text,
+                    media: {media_ids: mediaIDs},
+                    reply: {
+                        in_reply_to_tweet_id: req.body.twitterPostResponseID
+                    }
+                });
+                req.session.lastTweetId = createdTweet.id;
+            }
         }
         else {
-            await client.v2.tweet({
-                text: text
-            });
+            if (req.body.twitterPostResponseID !== "") {
+                const { data: createdTweet } = await client.v2.tweet({
+                    text: text,
+                    reply: {
+                        in_reply_to_tweet_id: req.body.twitterPostResponseID
+                    }
+                });
+                req.session.lastTweetId = createdTweet.id;
+            }
+            else {
+                const {data: createdTweet} = await client.v2.tweet({
+                    text: text
+                });
+                req.session.lastTweetId = createdTweet.id;
+            }
         }
-        return res.status(200).send({message: 'Pubblicato su Twitter.', status: 'primary'});
+
+        return res.status(200).send({message: 'Pubblicato su Twitter.', status: 'primary', createdTweetedId: req.session.lastTweetId ? req.session.lastTweetId : ""});
     } catch (error) {
         console.log(error)
         if (error.errors[0].message) {

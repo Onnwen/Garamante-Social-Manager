@@ -16,7 +16,8 @@ router.get('/', async function (req, res, next) {
         "facebookAuth": "",
         "twitterToggle": "disabled",
         "telegramToggle": "disabled",
-        "facebookToggle": "disabled"
+        "facebookToggle": "disabled",
+        "twitterSettings": ""
     };
 
     if (req.session.twitterClient) {
@@ -30,6 +31,18 @@ router.get('/', async function (req, res, next) {
 
         variables.twitterToggle = `checked`;
 
+        variables.twitterSettings += `
+            <div id="twitterEnabled" class="mt-5">
+                    <hr class="pb-2">
+                    <label for="text" class="form-label">Impostazioni Twitter</label>
+                    <div class="input-group pb-3">
+                        <span class="input-group-text" id="twitterPostResponseIDSpan">In risposta a</span>
+                        <input type="text" class="form-control" placeholder="ID tweet" aria-label="Identificativo" aria-describedby="twitterPostResponseIDSpan" id="twitterPostResponseID" value="${req.session.lastTweetId ? req.session.lastTweetId : ""}">
+                    </div>
+                    <hr class="pt-2">
+                </div>
+            `
+
         if (req.query.twitterAuthenticated) {
             variables.scripts += `showToast('Autenticazione a Twitter avvenuta con successo.', 'primary');`;
             variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`;
@@ -40,7 +53,7 @@ router.get('/', async function (req, res, next) {
             variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`;
         }
 
-        const authLink = await client.generateAuthLink('https://garamante.it/gsm/auth/twitter/callback/');
+        const authLink = await client.generateAuthLink('http://localhost:3003/gsm/auth/twitter/callback/');
 
         if (!authLink) {
             return res.status(400).send('Invalid request!');

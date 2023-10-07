@@ -234,6 +234,9 @@
                     </div>
                 </div>
             </div>
+
+            <%- twitterSettings %>
+
             <button type="button" class="btn btn-primary mt-5 w-100" id="publish">Pubblica</button>
         </div>
     </div>
@@ -254,7 +257,6 @@
 <script>
     const publishButton = $('#publish');
 
-    jQuery(".main-content").adjustHeightForScreen();
 
     tinymce.init({
         selector: "#text",
@@ -354,9 +356,11 @@
                 case 'twitter':
                     $.post('/gsm/publish/twitter', {
                         text: text,
-                        mediasNames: mediasNames
+                        mediasNames: mediasNames,
+                        twitterPostResponseID: $('#twitterPostResponseID').val()
                     }, function (publicationStatus) {
                         showToast(publicationStatus.message, publicationStatus.status);
+                        $('#twitterPostResponseID').val(publicationStatus.createdTweetedId);
                     }).fail(function (error) {
                         showToast(error.responseJSON.message, 'danger');
                     }).always(function () {

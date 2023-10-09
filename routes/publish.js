@@ -89,12 +89,12 @@ router.post('/twitter', async function (req, res, next) {
         return res.status(200).send({message: 'Pubblicato su Twitter.', status: 'primary', createdTweetedId: req.session.lastTweetId ? req.session.lastTweetId : ""});
     } catch (error) {
         console.log(error)
-        if (error.errors[0].message) {
+        try {
             return res.status(500).send({message: 'Errore durante la pubblicazione su Twitter. (' + error.errors[0].message + ')', status: 'danger'});
         }
-        else {
+        catch (e) {
             return res.status(500).send({
-                message: 'Errore durante la pubblicazione su Twitter. (' + error + ')',
+                message: 'Errore durante la pubblicazione su Twitter.',
                 status: 'danger'
             });
         }

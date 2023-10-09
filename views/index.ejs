@@ -358,9 +358,9 @@
 
     function publishTexts(platforms, text, mediasNames) {
         publishButton.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Pubblico sui social...');
-        platforms.forEach(function (platform) {
-            let completedPlatformsCount = 0;
+        let completedPlatforms = [];
 
+        platforms.forEach(function (platform) {
             switch (platform) {
                 case 'twitter':
                     $.post('/gsm/publish/twitter', {
@@ -373,7 +373,7 @@
                     }).fail(function (error) {
                         showToast(error.responseJSON.message, 'danger');
                     }).always(function () {
-                        completed();
+                        completed(platform);
                     });
                     break;
                 case 'telegram':
@@ -385,7 +385,7 @@
                     }).fail(function (error) {
                         showToast(error.responseJSON.message, 'danger');
                     }).always(function () {
-                        completed();
+                        completed(platform);
                     });
                     break;
                 case 'facebook':
@@ -396,23 +396,22 @@
                     }).fail(function (error) {
                         showToast(error.responseJSON.message, 'danger');
                     }).always(function () {
-                        completed();
+                        completed(platform);
                     });
                     break;
             }
-
-            function completed() {
-                completedPlatformsCount++;
-                if (completedPlatformsCount === platforms.length) {
-                    publishButton.attr('disabled', false);
-                    publishButton.html('Pubblica');
-                }
-            }
         });
+
+        function completed(platform) {
+            completedPlatforms.push(platform);
+            if (completedPlatforms.length >= platforms.length) {
+                publishButton.attr('disabled', false);
+                publishButton.html('Pubblica');
+            }
+        }
     }
 
     $(document).ready(function () {
-        updateCharsCount();
         <%- scripts %>
     });
 </script>

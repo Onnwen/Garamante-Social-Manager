@@ -235,7 +235,9 @@
                 </div>
             </div>
 
-            <%- twitterSettings %>
+            <div id="twitterSettings">
+                <%- twitterSettings %>
+            </div>
 
             <button type="button" class="btn btn-primary mt-5 w-100" id="publish">Pubblica</button>
         </div>
@@ -276,6 +278,8 @@
             });
         }
     });
+
+    jQuery(".main-content").adjustHeightForScreen();
 
     publishButton.click(function () {
         let text = tinymce.get("text").getContent({format: 'text'});
@@ -412,6 +416,14 @@
     }
 
     $(document).ready(function () {
+        $('#twitter').change(function () {
+            if ($(this).is(':checked')) {
+                $('#twitterSettings').show(300);
+            } else {
+                $('#twitterSettings').hide(300);
+            }
+        });
+
         <%- scripts %>
     });
 </script>

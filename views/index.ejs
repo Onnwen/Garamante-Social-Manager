@@ -233,6 +233,15 @@
                         <i class="bi bi-facebook" style="color: #1877f2;"></i>
                     </div>
                 </div>
+
+                <div class="col d-flex justify-content-center">
+                    <div class="form-check form-switch mt-1">
+                        <input class="form-check-input" type="checkbox" role="switch"
+                               id="blog" <%- blogToggle %>>
+                        <label class="form-check-label" for="blog">Blog</label>
+<!--                        <i class="bi bi-facebook" style="color: #1877f2;"></i>-->
+                    </div>
+                </div>
             </div>
 
             <div id="twitterSettings">
@@ -298,6 +307,9 @@
         }
         if ($('#facebook').is(':checked')) {
             platforms.push('facebook');
+        }
+        if ($('#blog').is(':checked')) {
+            platforms.push('blog');
         }
 
         if (platforms.length === 0) {
@@ -394,6 +406,17 @@
                     break;
                 case 'facebook':
                     $.post('/gsm/publish/facebook', {
+                        text: text
+                    }, function (publicationStatus) {
+                        showToast(publicationStatus.message, publicationStatus.status);
+                    }).fail(function (error) {
+                        showToast(error.responseJSON.message, 'danger');
+                    }).always(function () {
+                        completed(platform);
+                    });
+                    break;
+                case 'blog':
+                    $.post('/gsm/publish/blog', {
                         text: text
                     }, function (publicationStatus) {
                         showToast(publicationStatus.message, publicationStatus.status);

@@ -1,5 +1,6 @@
 var express = require('express');
-const {TwitterApi} = require("twitter-api-v2");
+const { TwitterApi } = require("twitter-api-v2");
+import { TwitterApiRateLimitPlugin } from '@twitter-api-v2/plugin-rate-limit'
 var router = express.Router();
 
 const client = new TwitterApi({
@@ -36,15 +37,14 @@ router.get('/', async function (req, res, next) {
         variables.twitterToggle = `checked`;
 
         variables.twitterSettings += `
-            <div id="twitterEnabled" class="mt-5">
-                    <hr class="pb-2">
-                    <label for="text" class="form-label">Impostazioni Twitter</label>
-                    <div class="input-group pb-3">
-                        <span class="input-group-text" id="twitterPostResponseIDSpan">In risposta a</span>
-                        <input type="text" class="form-control" placeholder="ID tweet" aria-label="Identificativo" aria-describedby="twitterPostResponseIDSpan" id="twitterPostResponseID" value="${req.session.lastTweetId ? req.session.lastTweetId : ""}">
-                    </div>
-                    <hr class="pt-2">
+            <div id="twitterEnabled" class="mt-3">
+                <label for="text" class="form-label">Impostazioni Twitter <i class="bi bi-twitter" style="color: #00acee;"></i></label>
+                <div class="input-group pb-2">
+                    <span class="input-group-text" id="twitterPostResponseIDSpan">In risposta a</span>
+                    <input type="text" class="form-control" placeholder="ID tweet" aria-label="Identificativo" aria-describedby="twitterPostResponseIDSpan" id="twitterPostResponseID" value="${req.session.lastTweetId ? req.session.lastTweetId : ""}">
                 </div>
+                <hr>
+            </div>
             `
 
         if (req.query.twitterAuthenticated) {
@@ -57,8 +57,10 @@ router.get('/', async function (req, res, next) {
             variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`;
         }
 
-        const domain = "garamante.it"
-        const protocol = "https";
+        // const domain = "garamante.it"
+        // const protocol = "https";
+        const domain = "localhost:3003"
+        const protocol = "http";
         const authLink = await client.generateAuthLink(protocol + '://' + domain + '/gsm/auth/twitter/callback/');
 
         if (!authLink) {
@@ -78,7 +80,7 @@ router.get('/', async function (req, res, next) {
         }
 
         variables.telegramAuth = `
-                <form class="mt-2">
+                <form class="mt-1">
                     <div class="mb-3">
                         <label for="telegramToken" class="form-label">Token</label>
                         <input type="text" class="form-control" id="telegramToken">
@@ -291,15 +293,14 @@ router.get('/', async function (req, res, next) {
         }
 
         variables.wordpressSettings += `
-            <div id="wordpressEnabled" class="mt-5">
-                    ${variables.twitterSettings !== "" ? "<hr class='pb-2'>" : ""}
-                    <label for="text" class="form-label">Impostazioni Wordpress</label>
-                    <div class="input-group pb-3">
-                        <span class="input-group-text" id="wordpressLiveBlogIDSpan">Pubblica in</span>
-                        <input type="text" class="form-control" placeholder="ID live blog" aria-label="Identificativo" aria-describedby="wordpressLiveBlogIDSpan" id="wordpressLiveBlogID" value="${req.session.wordpressLiveBlogID ? req.session.wordpressLiveBlogID : ""}">
-                    </div>
-                    <hr class="pt-2">
+            <div id="wordpressEnabled" class="mt-3">
+                <label for="text" class="form-label">Impostazioni Wordpress <i class="bi bi-wordpress" style="color: #21759b;"></i></label>
+                <div class="input-group pb-2">
+                    <span class="input-group-text" id="wordpressLiveBlogIDSpan">Pubblica in</span>
+                    <input type="text" class="form-control" placeholder="ID live blog" aria-label="Identificativo" aria-describedby="wordpressLiveBlogIDSpan" id="wordpressLiveBlogID" value="${req.session.wordpressLiveBlogID ? req.session.wordpressLiveBlogID : ""}">
                 </div>
+                <hr>
+            </div>
             `
 
         variables.wordpressAuth = `

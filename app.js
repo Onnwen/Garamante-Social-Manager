@@ -20,6 +20,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/gsm/node_modules', express.static(__dirname + '/node_modules/'))
 app.use('/gsm/stylesheets', express.static(__dirname + '/public/stylesheets/'))
 app.use('/gsm/images', express.static(__dirname + '/public/images/'))
+app.use('/gsm/static', express.static(__dirname + '/routes/uploads/'))
 
 const oneDay = 1000 * 60 * 60 * 24;
 app.use(sessions({

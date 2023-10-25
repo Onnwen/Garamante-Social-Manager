@@ -7,6 +7,8 @@ const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
 const FormData = require("form-data");
+const webp = require('webp-converter');
+const imageCompression = require('browser-image-compression');
 
 /* GET publish listing. */
 router.post('/twitter', async function (req, res, next) {
@@ -236,10 +238,23 @@ router.post('/blog', async function (req, res, next) {
         });
     }
 
-    const response = await axios.post('https://dangelodario.it/wp-json/liveblog/v1/' + req.body.post_id + '/crud/?gsm=true', {
+    let html = "<p>" + req.body.text + "</p>";
+
+    for (const mediaName in req.body.mediasNames) {
+        const mediaNameWithoutExtension = path.basename(req.body.mediasNames[mediaName], path.extname(req.body.mediasNames[mediaName]));
+        const fileExtension = path.extname(req.body.mediasNames[mediaName]);
+        if (fileExtension === '.mp4' || fileExtension === '.mov' || fileExtension === '.avi' || fileExtension === '.mkv' || fileExtension === '.wmv' || fileExtension === '.flv' || fileExtension === '.webm') {
+            html += "<video controls><source src=\"https://gsm.dangelodario.it/uploads/" + req.body.mediasNames[mediaName] + "\" type=\"video/" + fileExtension.replace('.', '') + "\"></video>";
+        }
+        else {
+            html += "<img src=\"https://garamante.it/gsm/static/" + req.body.mediasNames[mediaName] + "\" alt=\"" + mediaNameWithoutExtension + "\" />";
+        }
+    }
+
+    await axios.post('https://dangelodario.it/wp-json/liveblog/v1/' + req.body.post_id + '/crud/?gsm=true', {
             "crud_action": "insert",
             "post_id": req.body.post_id,
-            "content": "<p>" + req.body.text + "</p>",
+            "content": html,
             "author_id": 1,
             "contributor_ids": false
         },
@@ -280,16 +295,16 @@ router.post('/upload', upload.array('files', 10), (req, res) => {
             return res.status(400).send({message: 'Errore durante l\'upload dei files multimediali.', status: 'danger'});
         }
 
-        const uploadDir = path.join(__dirname, 'uploads');
-        fs.readdir(uploadDir, (err, files) => {
-            if (err) throw err;
-
-            for (const file of files) {
-                fs.unlink(path.join(uploadDir, file), err => {
-                    if (err) throw err;
-                });
-            }
-        });
+        // const uploadDir = path.join(__dirname, 'uploads');
+        // fs.readdir(uploadDir, (err, files) => {
+        //     if (err) throw err;
+        //
+        //     for (const file of files) {
+        //         fs.unlink(path.join(uploadDir, file), err => {
+        //             if (err) throw err;
+        //         });
+        //     }
+        // });
 
         const renamedFiles = files.map(file => {
             const newFileName = uuidv4() + path.extname(file.originalname)

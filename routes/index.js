@@ -57,8 +57,8 @@ router.get('/', async function (req, res, next) {
             variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`;
         }
 
-        const domain = "localhost:3003"
-        const protocol = "http";
+        const domain = "garamante.it"
+        const protocol = "https";
         const authLink = await client.generateAuthLink(protocol + '://' + domain + '/gsm/auth/twitter/callback/');
 
         if (!authLink) {

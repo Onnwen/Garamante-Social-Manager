@@ -166,16 +166,24 @@
                     <b>Twitter <i class="bi bi-twitter ms-1" style="color: #00acee;"></i></b>
                     <br>
                     <%- twitterAuth %>
+
                     <hr>
 
                     <b>Telegram <i class="bi bi-telegram ms-1" style="color: #0088cc;"></i></b>
                     <br>
                     <%- telegramAuth %>
+
                     <hr>
 
                     <b>Facebook <i class="bi bi-facebook ms-1" style="color: #1877f2;"></i></b>
                     <br>
                     <%- facebookAuth %>
+
+                    <hr>
+
+                    <b>Wordpress <i class="bi bi-wordpress ms-1" style="color: #21759b;"></i></b>
+                    <br>
+                    <%- wordpressAuth %>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ok</button>
@@ -237,15 +245,19 @@
                 <div class="col d-flex justify-content-center">
                     <div class="form-check form-switch mt-1">
                         <input class="form-check-input" type="checkbox" role="switch"
-                               id="blog" <%- blogToggle %>>
-                        <label class="form-check-label" for="blog">Blog</label>
-<!--                        <i class="bi bi-facebook" style="color: #1877f2;"></i>-->
+                               id="blog" <%- wordpressToggle %>>
+                        <label class="form-check-label" for="blog">Wordpress</label>
+                        <i class="bi bi-wordpress" style="color: #21759b;"></i>
                     </div>
                 </div>
             </div>
 
             <div id="twitterSettings">
                 <%- twitterSettings %>
+            </div>
+
+            <div id="wordpressSettings">
+                <%- wordpressSettings %>
             </div>
 
             <button type="button" class="btn btn-primary mt-5 w-100" id="publish">Pubblica</button>
@@ -310,6 +322,11 @@
         }
         if ($('#blog').is(':checked')) {
             platforms.push('blog');
+
+            if ($('#wordpressLiveBlogID').val() === '') {
+                showToast('Inserire l\'ID del live blog di Wordpress.', 'danger');
+                return;
+            }
         }
 
         if (platforms.length === 0) {
@@ -417,7 +434,9 @@
                     break;
                 case 'blog':
                     $.post('/gsm/publish/blog', {
-                        text: text
+                        text: text,
+                        mediasNames: mediasNames,
+                        post_id: $('#wordpressLiveBlogID').val()
                     }, function (publicationStatus) {
                         showToast(publicationStatus.message, publicationStatus.status);
                     }).fail(function (error) {
@@ -444,6 +463,14 @@
                 $('#twitterSettings').show(300);
             } else {
                 $('#twitterSettings').hide(300);
+            }
+        });
+
+        $('#blog').change(function () {
+            if ($(this).is(':checked')) {
+                $('#wordpressSettings').show(300);
+            } else {
+                $('#wordpressSettings').hide(300);
             }
         });
 

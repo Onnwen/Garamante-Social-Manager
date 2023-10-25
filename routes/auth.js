@@ -114,4 +114,39 @@ router.get('/facebook/exit', function (req, res, next) {
     res.redirect('/gsm/');
 });
 
+router.get('/wordpress/check', async function (req, res, next) {
+    if (!req.query.username || !req.query.password) {
+        return res.status(400).send('Missing parameters!');
+    }
+
+    try {
+        const response = await axios.get(`https://dangelodario.it/wp-json/wp/v2/posts?status=draft&gsm=true`, {
+            auth: {
+                username: req.query.username,
+                password: req.query.password
+            }
+        });
+
+        if ((response.status === 200 || response.status === 201) && response.data[0].id) {
+            req.session.wordpressUsername = req.query.username;
+            req.session.wordpressPassword = req.query.password;
+            return res.redirect('/gsm/?wordpressAuthenticated=true');
+        }
+        else {
+            return res.redirect('/gsm/?wordpressAuthenticatedError=true');
+        }
+    }
+    catch (error) {
+        console.log(error)
+
+        return res.redirect('/gsm/?wordpressAuthenticatedError=true');
+    }
+});
+
+router.get('/wordpress/exit', function (req, res, next) {
+    req.session.wordpressUsername = null;
+    req.session.wordpressPassword = null;
+    res.redirect('/gsm/');
+});
+
 module.exports = router;

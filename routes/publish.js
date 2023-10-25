@@ -229,44 +229,44 @@ router.post('/facebook', async function (req, res, next) {
 });
 
 router.post('/blog', async function (req, res, next) {
-    if (!req.body.text) {
+    if (!req.body.text || !req.body.post_id) {
         return res.status(400).send({
-            message: 'Errore durante la pubblicazione su Telegram. (È necessario fornire un testo)',
+            message: 'Errore durante la pubblicazione su Wordpress. (È necessario fornire un testo)',
             status: 'danger'
         });
     }
 
-    axios.post('https://dangelodario.it/wp-json/liveblog/v1/16057/crud/', {
-            "crud_action":"insert",
-            "post_id":"16057",
-            "content":"<p>Prova da GSM </p>",
-            "author_id":1,
-            "contributor_ids":false
+    const response = await axios.post('https://dangelodario.it/wp-json/liveblog/v1/' + req.body.post_id + '/crud/?gsm=true', {
+            "crud_action": "insert",
+            "post_id": req.body.post_id,
+            "content": "<p>" + req.body.text + "</p>",
+            "author_id": 1,
+            "contributor_ids": false
         },
         {
-            headers: {
-                'X-WP-Nonce': '558121cd63',
-                'Content-Type': 'application/json',
-                'Cache-Control': 'no-cache',
-                'Sec-Fetch-Dest': 'empty',
-                'Sec-Fetch-Mode': 'cors',
-                'Sec-Fetch-Site': 'same-origin',
-                'X-Requested-With': 'XMLHttpRequest',
-                'Cookie': 'cf_clearance=tMBVG38GbFMtoIoLtS2hD5qQE3jBb.XEty8le9Xxwpg-1697216860-0-1-4cf73ff4.ba3469e8.1bf66014-0.2.1697216860; wordpress_logged_in_18f939216344e5311bb66df83e048d3d=cryda91%7C1697300236%7CMs7W9qfpKEA5g5dh57rw2iBcobZyYOUrh7LuqKRoFBE%7Cef5952357e221aa29e64e074b2a7075999b9877fd6820879ddd5485b37fecf73; wordpress_test_cookie=WP%20Cookie%20check; steady-token=bDY2K0ZzLyt5RjA0MW9nNjJRZitSUT09; wp-settings-1=libraryContent%3Dbrowse%26posts_list_mode%3Dlist%26editor%3Dhtml; wp-settings-time-1=1693214241'
+            auth: {
+                username: req.session.wordpressUsername,
+                password: req.session.wordpressPassword
             }
         })
         .then(response => {
+            console.log(response)
             if (response.status === 200) {
-                res.status(200).send({message: 'Pubblicato sul Blog.', status: 'primary'});
-            }
-            else {
+                res.status(200).send({message: 'Pubblicato su Wordpress.', status: 'primary'});
+            } else {
                 console.log(response)
-                res.status(500).send({message: 'Errore durante la pubblicazione sul Blog. (' + response.data + ')', status: 'danger'});
+                res.status(500).send({
+                    message: 'Errore durante la pubblicazione su Wordpress. (' + response.data + ')',
+                    status: 'danger'
+                });
             }
         })
         .catch(error => {
             console.log(error)
-            res.status(500).send({message: 'Errore durante la pubblicazione sul Blog. (' + error + ')', status: 'danger'});
+            res.status(500).send({
+                message: 'Errore durante la pubblicazione su Wordpress. (' + error + ')',
+                status: 'danger'
+            });
         });
 });
 

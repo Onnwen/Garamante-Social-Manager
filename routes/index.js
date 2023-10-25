@@ -14,11 +14,14 @@ router.get('/', async function (req, res, next) {
         "twitterAuth": "",
         "telegramAuth": "",
         "facebookAuth": "",
+        "wordpressAuth": "",
         "twitterToggle": "disabled",
         "telegramToggle": "disabled",
         "facebookToggle": "disabled",
+        "wordpressToggle": "disabled",
         "blogToggle": "",
-        "twitterSettings": ""
+        "twitterSettings": "",
+        "wordpressSettings": "",
     };
 
     if (req.session.twitterClient) {
@@ -216,6 +219,94 @@ router.get('/', async function (req, res, next) {
             <script>
                 function exitFromFacebook() {
                     window.location.href = '/gsm/auth/facebook/exit';
+                }
+            </script>`;
+    }
+
+    if (!req.session.wordpressUsername || !req.session.wordpressPassword) {
+        if (req.query.wordpressAuthenticatedError) {
+            variables.scripts += `showToast('Autenticazione a Wordpress fallita.', 'danger');`;
+            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`;
+        }
+
+        variables.wordpressAuth = `
+                <form class="mt-2">
+                    <div class="mb-3">
+                        <label for="wordpressUsername" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="wordpressUsername">
+                    </div>
+                    <div class="mb-3">
+                        <label for="wordpressPassword" class="form-label">Password</label>
+                        <input type="text" class="form-control" id="wordpressPassword">
+                    </div>
+                </form>
+                <button type='button' class='btn btn-primary w-100' onclick='saveWordpressCredentials()' disabled id="authWordpressButton">Autentica Wordpress</button>
+                <script>
+                    $(document).ready(function() {
+                        if (localStorage.getItem('wordpressUsername') !== null && localStorage.getItem('wordpressPassword') !== null) {
+                            document.getElementById('wordpressUsername').value = localStorage.getItem('wordpressUsername');
+                            document.getElementById('wordpressPassword').value = localStorage.getItem('wordpressPassword');
+                            checkWordpressCredentials();
+                        }
+                        
+                        $('#wordpressUsername').on('input', function() {
+                            checkWordpressCredentials();
+                        });
+                        $('#wordpressPassword').on('input', function() {
+                            checkWordpressCredentials()
+                        });
+                    });
+                    
+                    function checkWordpressCredentials() {
+                        const username = document.getElementById('wordpressUsername').value;
+                        const password = document.getElementById('wordpressPassword').value;
+                        
+                        if (username === '' || password === '') {
+                            $('#authWordpressButton').prop('disabled', true);
+                        }
+                        else if (username !== '' && password !== '') {
+                            $('#authWordpressButton').prop('disabled', false);
+                        }
+                    }
+                
+                    function saveWordpressCredentials() {
+                        if (document.getElementById('wordpressUsername').value === '' || document.getElementById('wordpressPassword').value === '') {
+                            showToast("Compila tutti i dati d'autenticazione Wordpress.", 'danger');
+                            return;
+                        }
+                        
+                        const username = document.getElementById('wordpressUsername').value;
+                        const password = document.getElementById('wordpressPassword').value;
+                        window.location.href = '/gsm/auth/wordpress/check?username=' + username + '&password=' + password;
+                    }
+                </script>`;
+    } else {
+        variables.wordpressToggle = `checked`;
+
+        if (req.query.wordpressAuthenticated) {
+            variables.scripts += `showToast('Autenticazione a Wordpress avvenuta con successo.', 'primary');`;
+            variables.scripts += `localStorage.setItem('wordpressUsername', '${req.session.wordpressUsername}');`;
+            variables.scripts += `localStorage.setItem('wordpressPassword', '${req.session.wordpressPassword}');`;
+            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`;
+        }
+
+        variables.wordpressSettings += `
+            <div id="wordpressEnabled" class="mt-5">
+                    ${variables.twitterSettings !== "" ? "<hr class='pb-2'>" : ""}
+                    <label for="text" class="form-label">Impostazioni Wordpress</label>
+                    <div class="input-group pb-3">
+                        <span class="input-group-text" id="wordpressLiveBlogIDSpan">Pubblica in</span>
+                        <input type="text" class="form-control" placeholder="ID live blog" aria-label="Identificativo" aria-describedby="wordpressLiveBlogIDSpan" id="wordpressLiveBlogID" value="${req.session.wordpressLiveBlogID ? req.session.wordpressLiveBlogID : ""}">
+                    </div>
+                    <hr class="pt-2">
+                </div>
+            `
+
+        variables.wordpressAuth = `
+            <button type='button' class='btn btn-danger w-100 mt-2' onclick='exitFromWordpress()'>Disconnetti Wordpress</button>
+            <script>
+                function exitFromWordpress() {
+                    window.location.href = '/gsm/auth/wordpress/exit';
                 }
             </script>`;
     }

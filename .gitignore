@@ -3,3 +3,4 @@ package-lock.json
 .idea
 node_modules
 routes/uploads
+.DS_Store

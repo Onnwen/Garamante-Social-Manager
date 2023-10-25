@@ -7,8 +7,6 @@ const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
 const FormData = require("form-data");
-const webp = require('webp-converter');
-const imageCompression = require('browser-image-compression');
 
 /* GET publish listing. */
 router.post('/twitter', async function (req, res, next) {

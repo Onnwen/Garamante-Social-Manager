@@ -1,7 +1,6 @@
-var express = require('express');
+const express = require('express');
 const { TwitterApi } = require("twitter-api-v2");
-import { TwitterApiRateLimitPlugin } from '@twitter-api-v2/plugin-rate-limit'
-var router = express.Router();
+const router = express.Router();
 
 const client = new TwitterApi({
     appKey: '8sH260P4Gcz7C3YzdTvlAE8D8',
@@ -38,7 +37,10 @@ router.get('/', async function (req, res, next) {
 
         variables.twitterSettings += `
             <div id="twitterEnabled" class="mt-3">
-                <label for="text" class="form-label">Impostazioni Twitter <i class="bi bi-twitter" style="color: #00acee;"></i></label>
+                <div class="d-flex justify-content-between">
+                    <label for="text" class="form-label d-inline-f">Impostazioni Twitter <i class="bi bi-twitter" style="color: #00acee;"></i></label>    
+                    <label for="text" class="form-label d-inline-f text-muted">${req.session.remainingTweet ? req.session.remainingTweet + " tweets rimanenti" : ""}</label>  
+                </div>
                 <div class="input-group pb-2">
                     <span class="input-group-text" id="twitterPostResponseIDSpan">In risposta a</span>
                     <input type="text" class="form-control" placeholder="ID tweet" aria-label="Identificativo" aria-describedby="twitterPostResponseIDSpan" id="twitterPostResponseID" value="${req.session.lastTweetId ? req.session.lastTweetId : ""}">

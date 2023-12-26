@@ -1,28 +1,30 @@
-const express = require('express');
-const { TwitterApi } = require("twitter-api-v2");
-const router = express.Router();
+const express = require("express")
+const { TwitterApi } = require("twitter-api-v2")
+const router = express.Router()
 
 const client = new TwitterApi({
-    appKey: '8sH260P4Gcz7C3YzdTvlAE8D8',
-    appSecret: 'GNJhj6MvzwvpTdhUE7vbBH4hLR6DeClf1PLF6bq87MEHvtLmzm',
-});
+    appKey: "8sH260P4Gcz7C3YzdTvlAE8D8",
+    appSecret: "GNJhj6MvzwvpTdhUE7vbBH4hLR6DeClf1PLF6bq87MEHvtLmzm",
+})
 
 /* GET home page. */
-router.get('/', async function (req, res, next) {
+router.get("/", async function(req, res, next) {
     const variables = {
         "scripts": "",
         "twitterAuth": "",
         "telegramAuth": "",
         "facebookAuth": "",
         "wordpressAuth": "",
+        "bskyAuth": "",
         "twitterToggle": "disabled",
         "telegramToggle": "disabled",
         "facebookToggle": "disabled",
         "wordpressToggle": "disabled",
+        "bskyToggle": "disabled",
         "blogToggle": "",
         "twitterSettings": "",
         "wordpressSettings": "",
-    };
+    }
 
     if (req.session.twitterClient) {
         variables.twitterAuth = `
@@ -31,9 +33,9 @@ router.get('/', async function (req, res, next) {
                 function exitFromTwitter() {
                     window.location.href = '/gsm/auth/twitter/exit';
                 }
-            </script>`;
+            </script>`
 
-        variables.twitterToggle = `checked`;
+        variables.twitterToggle = `checked`
 
         variables.twitterSettings += `
             <div id="twitterEnabled" class="mt-3">
@@ -50,35 +52,35 @@ router.get('/', async function (req, res, next) {
             `
 
         if (req.query.twitterAuthenticated) {
-            variables.scripts += `showToast('Autenticazione a Twitter avvenuta con successo.', 'primary');`;
-            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`;
+            variables.scripts += `showToast('Autenticazione a Twitter avvenuta con successo.', 'primary');`
+            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`
         }
     } else {
         if (req.query.twitterAuthenticationError) {
-            variables.scripts += `showToast('Autenticazione a Twitter fallita.', 'danger');`;
-            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`;
+            variables.scripts += `showToast('Autenticazione a Twitter fallita.', 'danger');`
+            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`
         }
 
         const domain = "garamante.it"
-        const protocol = "https";
+        const protocol = "https"
         // const domain = "localhost:3003"
         // const protocol = "http";
-        const authLink = await client.generateAuthLink(protocol + '://' + domain + '/gsm/auth/twitter/callback/');
+        const authLink = await client.generateAuthLink(protocol + "://" + domain + "/gsm/auth/twitter/callback/")
 
         if (!authLink) {
-            return res.status(400).send('Invalid request!');
+            return res.status(400).send("Invalid request!")
         }
 
-        req.session.oauth_token = authLink.oauth_token;
-        req.session.oauth_token_secret = authLink.oauth_token_secret;
+        req.session.oauth_token = authLink.oauth_token
+        req.session.oauth_token_secret = authLink.oauth_token_secret
 
         variables.twitterAuth = `<button type='button' class='btn btn-primary w-100 mt-2' onclick='window.location.href="${authLink.url}"'>Autentica Twitter</button>`
     }
 
     if (!req.session.telegramToken || !req.session.telegramChatID) {
         if (req.query.telegramAuthenticatedError) {
-            variables.scripts += `showToast('Autenticazione a Telegram fallita.', 'danger');`;
-            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`;
+            variables.scripts += `showToast('Autenticazione a Telegram fallita.', 'danger');`
+            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`
         }
 
         variables.telegramAuth = `
@@ -131,15 +133,15 @@ router.get('/', async function (req, res, next) {
                         const chatID = document.getElementById('telegramChatID').value;
                         window.location.href = '/gsm/auth/telegram/check?token=' + token + '&chatID=' + chatID;
                     }
-                </script>`;
+                </script>`
     } else {
-        variables.telegramToggle = `checked`;
+        variables.telegramToggle = `checked`
 
         if (req.query.telegramAuthenticated) {
-            variables.scripts += `showToast('Autenticazione a Telegram avvenuta con successo.', 'primary');`;
-            variables.scripts += `localStorage.setItem('telegramToken', '${req.session.telegramToken}');`;
-            variables.scripts += `localStorage.setItem('telegramChatID', '${req.session.telegramChatID}');`;
-            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`;
+            variables.scripts += `showToast('Autenticazione a Telegram avvenuta con successo.', 'primary');`
+            variables.scripts += `localStorage.setItem('telegramToken', '${req.session.telegramToken}');`
+            variables.scripts += `localStorage.setItem('telegramChatID', '${req.session.telegramChatID}');`
+            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`
         }
 
         variables.telegramAuth = `
@@ -148,13 +150,13 @@ router.get('/', async function (req, res, next) {
                 function exitFromTelegram() {
                     window.location.href = '/gsm/auth/telegram/exit';
                 }
-            </script>`;
+            </script>`
     }
 
     if (!req.session.facebookToken || !req.session.facebookPageID) {
         if (req.query.facebookAuthenticatedError) {
-            variables.scripts += `showToast('Autenticazione a Facebook fallita.', 'danger');`;
-            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`;
+            variables.scripts += `showToast('Autenticazione a Facebook fallita.', 'danger');`
+            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`
         }
 
         variables.facebookAuth = `
@@ -207,15 +209,15 @@ router.get('/', async function (req, res, next) {
                         const pageID = document.getElementById('facebookPageID').value;
                         window.location.href = '/gsm/auth/facebook/check?token=' + token + '&pageID=' + pageID;
                     }
-                </script>`;
+                </script>`
     } else {
-        variables.facebookToggle = `checked`;
+        variables.facebookToggle = `checked`
 
         if (req.query.facebookAuthenticated) {
-            variables.scripts += `showToast('Autenticazione a Facebook avvenuta con successo.', 'primary');`;
-            variables.scripts += `localStorage.setItem('facebookToken', '${req.session.facebookToken}');`;
-            variables.scripts += `localStorage.setItem('facebookPageID', '${req.session.facebookPageID}');`;
-            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`;
+            variables.scripts += `showToast('Autenticazione a Facebook avvenuta con successo.', 'primary');`
+            variables.scripts += `localStorage.setItem('facebookToken', '${req.session.facebookToken}');`
+            variables.scripts += `localStorage.setItem('facebookPageID', '${req.session.facebookPageID}');`
+            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`
         }
 
         variables.facebookAuth = `
@@ -224,13 +226,13 @@ router.get('/', async function (req, res, next) {
                 function exitFromFacebook() {
                     window.location.href = '/gsm/auth/facebook/exit';
                 }
-            </script>`;
+            </script>`
     }
 
     if (!req.session.wordpressUsername || !req.session.wordpressPassword) {
         if (req.query.wordpressAuthenticatedError) {
-            variables.scripts += `showToast('Autenticazione a Wordpress fallita.', 'danger');`;
-            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`;
+            variables.scripts += `showToast('Autenticazione a Wordpress fallita.', 'danger');`
+            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`
         }
 
         variables.wordpressAuth = `
@@ -283,15 +285,15 @@ router.get('/', async function (req, res, next) {
                         const password = document.getElementById('wordpressPassword').value;
                         window.location.href = '/gsm/auth/wordpress/check?username=' + username + '&password=' + password;
                     }
-                </script>`;
+                </script>`
     } else {
-        variables.wordpressToggle = `checked`;
+        variables.wordpressToggle = `checked`
 
         if (req.query.wordpressAuthenticated) {
-            variables.scripts += `showToast('Autenticazione a Wordpress avvenuta con successo.', 'primary');`;
-            variables.scripts += `localStorage.setItem('wordpressUsername', '${req.session.wordpressUsername}');`;
-            variables.scripts += `localStorage.setItem('wordpressPassword', '${req.session.wordpressPassword}');`;
-            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`;
+            variables.scripts += `showToast('Autenticazione a Wordpress avvenuta con successo.', 'primary');`
+            variables.scripts += `localStorage.setItem('wordpressUsername', '${req.session.wordpressUsername}');`
+            variables.scripts += `localStorage.setItem('wordpressPassword', '${req.session.wordpressPassword}');`
+            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`
         }
 
         variables.wordpressSettings += `
@@ -311,10 +313,86 @@ router.get('/', async function (req, res, next) {
                 function exitFromWordpress() {
                     window.location.href = '/gsm/auth/wordpress/exit';
                 }
-            </script>`;
+            </script>`
     }
 
-    res.render('index', variables);
-});
+    if (!req.session.bskyIdentifier || !req.session.bskyPassword) {
+        if (req.query.bskybAuthenticatedError) {
+            variables.scripts += `showToast('Autenticazione a Bsky fallita.', 'danger');`
+            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`
+        }
 
-module.exports = router;
+        variables.bskyAuth = `
+                <form class="mt-2">
+                    <div class="mb-3">
+                        <label for="bskyIdentifier" class="form-label">Identifier</label>
+                        <input type="text" class="form-control" id="bskyIdentifier">
+                    </div>
+                    <div class="mb-3">
+                        <label for="bskyPassword" class="form-label">App Password</label>
+                        <input type="text" class="form-control" id="bskyPassword">
+                    </div>
+                </form>
+                <button type='button' class='btn btn-primary w-100' onclick='saveBskyCredentials()' disabled id="authBskyButton">Autentica Bsky</button>
+                <script>
+                    $(document).ready(function() {
+                        if (localStorage.getItem('bskyIdentifier') !== null && localStorage.getItem('bskyPassword') !== null) {
+                            document.getElementById('bskyIdentifier').value = localStorage.getItem('bskyIdentifier');
+                            document.getElementById('bskyPassword').value = localStorage.getItem('bskyPassword');
+                            checkBskyCredentials();
+                        }
+                        
+                        $('#bskyIdentifier').on('input', function() {
+                            checkBskyCredentials();
+                        });
+                        $('#bskyPassword').on('input', function() {
+                            checkBskyCredentials()
+                        });
+                    });
+                    
+                    function checkBskyCredentials() {
+                        const identifier = document.getElementById('bskyIdentifier').value;
+                        const password = document.getElementById('bskyPassword').value;
+                        
+                        if (identifier === '' || password === '') {
+                            $('#authBskyButton').prop('disabled', true);
+                        }
+                        else if (identifier !== '' && password !== '') {
+                            $('#authBskyButton').prop('disabled', false);
+                        }
+                    }
+                
+                    function saveBskyCredentials() {
+                        if (document.getElementById('bskyIdentifier').value === '' || document.getElementById('bskyPassword').value === '') {
+                            showToast("Compila tutti i dati d'autenticazione Bsky.", 'danger');
+                            return;
+                        }
+                        
+                        const identifier = document.getElementById('bskyIdentifier').value;
+                        const password = document.getElementById('bskyPassword').value;
+                        window.location.href = '/gsm/auth/bskyb/check?identifier=' + identifier + '&password=' + password;
+                    }
+                </script>`
+    } else {
+        variables.bskyToggle = `checked`
+
+        if (req.query.bskybAuthenticated) {
+            variables.scripts += `showToast('Autenticazione a Bsky avvenuta con successo.', 'primary');`
+            variables.scripts += `localStorage.setItem('bskyIdentifier', '${req.session.bskyIdentifier}');`
+            variables.scripts += `localStorage.setItem('bskyPassword', '${req.session.bskyPassword}');`
+            variables.scripts += `window.history.replaceState({}, document.title, "/gsm/");`
+        }
+
+        variables.bskyAuth = `
+            <button type='button' class='btn btn-danger w-100 mt-2' onclick='exitFromBsky()'>Disconnetti Bsky</button>
+            <script>
+                function exitFromBsky() {
+                    window.location.href = '/gsm/auth/bskyb/exit';
+                }
+            </script>`
+    }
+
+    res.render("index", variables)
+})
+
+module.exports = router

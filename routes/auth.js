@@ -178,4 +178,13 @@ router.get("/bskyb/check", async function(req, res, next) {
     }
 })
 
+router.get("/bskyb/exit", function(req, res, next) {
+    req.session.bskyIdentifier = null
+    req.session.bskyPassword = null
+    req.session.bskyAccessJwt = null
+    req.session.bskybRefreshJwt = null
+    req.session.did = null
+    res.redirect("/gsm/")
+});
+
 module.exports = router

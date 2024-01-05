@@ -70,6 +70,93 @@
 <body class="bg-light px-2">
 
 <div class="modal fade"
+     id="forceSamePublicationModal"
+     tabindex="-1"
+     aria-labelledby="forceSamePublicationModal"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"
+                    id="termsOfUseModalLabel">
+                    Verifica pubblicazione
+                    <i
+                            class="bi bi-exclamation-triangle-fill text-warning ms-1"></i>
+                </h5>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Questa pubblicazione contiene lo stesso testo della precedente, continuare?
+                <table class="table table-striped mt-3">
+                    <thead>
+                    <tr>
+                        <th scope="col">Piattaforma</th>
+                        <th scope="col" class="text-center">Pubblicazione precedente</th>
+                        <th scope="col" class="text-center">Questa pubblicazione</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th scope="row">Twitter
+                                <i class="bi bi-twitter-x ms-2"
+                                   style="color: #000000;"></i>
+                            <br></th>
+                        <td class="text-center" id="lastTwitter"></td>
+                        <td class="text-center" id="thisTwitter"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Telegram
+                                <i class="bi bi-telegram ms-2"
+                                   style="color: #0088cc;"></i>
+                            <br></th>
+                        <td class="text-center" id="lastTelegram"></td>
+                        <td class="text-center" id="thisTelegram"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Facebook
+                                <i class="bi bi-facebook ms-2"
+                                   style="color: #1877f2;"></i>
+                            <br></th>
+                        <td class="text-center" id="lastFacebook"></td>
+                        <td class="text-center" id="thisFacebook"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Wordpress<i class="bi bi-wordpress ms-2"
+                                                           style="color: #21759b;"></i>
+                            <br></th>
+                        <td class="text-center" id="lastWordpress"></td>
+                        <td class="text-center" id="thisWordpress"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Bsky<i class="bi bi-cloud-fill ms-2"
+                                                       style="color: #0085ff;"></i>
+                            <br></th>
+                        <td class="text-center" id="lastBsky"></td>
+                        <td class="text-center" id="thisBsky"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Annulla
+                </button>
+                <button type="button"
+                        class="btn btn-primary"
+                        id="forceSamePublication">
+                    Pubblica
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade"
      id="termsOfUseModal"
      tabindex="-1"
      aria-labelledby="termsOfUseModal"
@@ -615,7 +702,7 @@
             </div>
             <div class="mb-4">
                 <label for="text"
-                       class="form-label">Testo
+                       class="form-label" id="copyButton">Testo
                     <span class="text-muted"
                           id="charsCount"></span></label>
                 <textarea
@@ -748,6 +835,14 @@
 <script>
     const publishButton = $("#publish")
 
+    const lastPublish = {
+        text: "",
+        platforms: [],
+        force: false,
+    }
+
+    const allPlatforms = ["twitter", "telegram", "facebook", "blog", "bsky"]
+
     tinymce.init({
         selector: "#text",
         plugins: "emoticons autoresize",
@@ -769,6 +864,17 @@
 
     jQuery(".main-content").adjustHeightForScreen()
 
+    $("#copyButton").click(function() {
+        navigator.clipboard.writeText(tinymce.get("text").getContent({ format: "text" }))
+        showToast("Testo copiato.", "success")
+    })
+
+    $("#forceSamePublication").click(function() {
+        lastPublish.force = true
+        publishButton.click()
+        $("#forceSamePublicationModal").modal("hide")
+    })
+
     publishButton.click(function() {
         let text = tinymce.get("text").getContent({ format: "text" })
         let platforms = []
@@ -777,6 +883,7 @@
             showToast("Inserisci un testo da pubblicare.", "danger")
             return
         }
+
 
         if ($("#twitter").is(":checked")) {
             platforms.push("twitter")
@@ -802,6 +909,31 @@
         if (platforms.length === 0) {
             showToast("Seleziona almeno una piattaforma in cui pubblicare.", "danger")
             return
+        } else if (text === lastPublish.text && lastPublish.force === false) {
+            lastPublish.platforms.forEach(function(platform) {
+                $(`#last${platform.charAt(0).toUpperCase() + platform.slice(1)}`).html('<i class="bi bi-check text-primary h3"></i')
+            })
+            allPlatforms.forEach(function(platform) {
+                if (!lastPublish.platforms.includes(platform)) {
+                    $(`#last${platform.charAt(0).toUpperCase() + platform.slice(1)}`).html('<i class="bi bi-x text-secondary h3"></i')
+                }
+            })
+
+            platforms.forEach(function(platform) {
+                $(`#this${platform.charAt(0).toUpperCase() + platform.slice(1)}`).html('<i class="bi bi-check text-primary h3"></i')
+            })
+            allPlatforms.forEach(function(platform) {
+                if (!platforms.includes(platform)) {
+                    $(`#this${platform.charAt(0).toUpperCase() + platform.slice(1)}`).html('<i class="bi bi-x text-secondary h3"></i')
+                }
+            })
+
+            $("#forceSamePublicationModal").modal("show")
+            return
+        } else {
+            lastPublish.text = text
+            lastPublish.platforms = platforms
+            lastPublish.force = false
         }
 
         const files = ($("#medias").val())
@@ -933,6 +1065,7 @@
         function completed(platform) {
             completedPlatforms.push(platform)
             if (completedPlatforms.length >= platforms.length) {
+                $("#medias").val("")
                 publishButton.attr("disabled", false)
                 publishButton.html("Pubblica")
             }

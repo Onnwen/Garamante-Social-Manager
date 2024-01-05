@@ -866,7 +866,7 @@
 
     $("#copyButton").click(function() {
         navigator.clipboard.writeText(tinymce.get("text").getContent({ format: "text" }))
-        showToast("Testo copiato.", "success")
+        showToast("Testo copiato.", "secondary")
     })
 
     $("#forceSamePublication").click(function() {

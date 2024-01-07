@@ -320,7 +320,7 @@ router.post("/bsky", async function(req, res, next) {
         })
     }
 
-    const agent = new BskyAgent({ service: 'bsky' })
+    const agent = new BskyAgent({ service: 'https://bsky.social' })
     await agent.login({
         identifier: req.session.bskyIdentifier,
         password: req.body.bskyPassword,

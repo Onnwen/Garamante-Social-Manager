@@ -1,6 +1,8 @@
 const express = require("express")
 const { TwitterApi } = require("twitter-api-v2")
 const axios = require("axios")
+const { BskyAgent } = require("@atproto/api")
+const constants = require("constants")
 const router = express.Router()
 /* GET auth listing. */
 router.get("/twitter", function(req, res, next) {
@@ -155,16 +157,16 @@ router.get("/bskyb/check", async function(req, res, next) {
     }
 
     try {
-        const response = await axios.post(`https://bsky.social/xrpc/com.atproto.server.createSession`, {
+        const agent = new BskyAgent({ service: "https://bsky.social" })
+
+        const response = await agent.login({
             identifier: req.query.identifier,
-            password: req.query.password,
+            password: req.query.password
         })
 
-        if (response.status === 200 && response.data) {
+        if (response.success) {
             req.session.bskyIdentifier = req.query.identifier
             req.session.bskyPassword = req.query.password
-            req.session.bskyAccessJwt = response.data.accessJwt
-            req.session.bskybRefreshJwt = response.data.refreshJwt
             req.session.did = response.data.did
             return res.redirect("/gsm/?bskybAuthenticated=true")
         } else {

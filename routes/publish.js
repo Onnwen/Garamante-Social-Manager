@@ -7,8 +7,9 @@ const { v4: uuidv4 } = require("uuid")
 const fs = require("fs")
 const path = require("path")
 const FormData = require("form-data")
-const { BskyAgent,
-    RichText
+const {
+    BskyAgent,
+    RichText,
 } = require("@atproto/api")
 
 /* GET publish listing. */
@@ -320,45 +321,49 @@ router.post("/bsky", async function(req, res, next) {
         })
     }
 
-    const agent = new BskyAgent({ service: 'https://bsky.social' })
-    await agent.login({
-        identifier: req.session.bskyIdentifier,
-        password: req.body.bskyPassword,
-    })
-
-
-    let blobsIDs = []
-    if (req.body.mediasNames) {
-        try {
-            let promises = []
-            for (let i = 0; i < req.body.mediasNames.length; i++) {
-                promises.push(agent.uploadBlob("routes/uploads/" + req.body.mediasNames[i]))
-            }
-            blobsIDs = await Promise.all([
-                ...promises,
-            ])
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    const rt = new RichText({
-        text: req.body.text,
-    })
-    await rt.detectFacets(agent) // automatically detects mentions and links
-    const postRecord = {
-        $type: 'app.bsky.feed.post',
-        text: rt.text,
-        facets: rt.facets,
-        createdAt: new Date().toISOString(),
-        embed: {
-            $type: 'app.bsky.feed.embed',
-            images: blobsIDs,
-        }
-    }
-
     try {
+        const agent = new BskyAgent({ service: "https://bsky.social" })
+
+        await agent.login({
+            identifier: req.session.bskyIdentifier,
+            password: req.session.bskyPassword,
+        })
+
+        let blobsIDs = []
+        if (req.body.mediasNames) {
+            try {
+                let promises = []
+                for (let i = 0; i < req.body.mediasNames.length; i++) {
+                    promises.push(agent.uploadBlob("routes/uploads/" + req.body.mediasNames[i]))
+                }
+                blobsIDs = await Promise.all([
+                    ...promises,
+                ])
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        const rt = new RichText({
+            text: req.body.text,
+        })
+        await rt.detectFacets(agent)
+        const postRecord = {
+            $type: "app.bsky.feed.post",
+            text: rt.text,
+            facets: rt.facets,
+            createdAt: new Date().toISOString(),
+            embed: {
+                $type: "app.bsky.feed.embed",
+                images: blobsIDs,
+            },
+        }
         await agent.post(postRecord)
+
+        return res.status(200).send({
+            message: "Pubblicato su Bsky.",
+            status: "primary",
+        })
     } catch (error) {
         console.log(error)
         return res.status(500).send({

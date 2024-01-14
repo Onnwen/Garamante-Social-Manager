@@ -9,8 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@heroicons/react": "^1.0.6",
+    "@heroicons/react": "^2.1.1",
     "@tremor/react": "^3.13.1",
+    "bootstrap-icons": "^1.11.3",
+    "framer-motion": "^10.18.0",
+    "lottie-react": "^2.4.0",
     "next": "14.0.4",
     "prettier": "^3.2.1",
     "react": "^18",
@@ -20,11 +23,21 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/react-lottie": "^1.2.10",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": false,
+    "tabWidth": 4,
+    "trailingComma": "es5",
+    "quoteProps": "as-needed",
+    "bracketSameLine": true,
+    "printWidth": 10000
   }
 }
